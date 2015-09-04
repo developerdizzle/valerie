@@ -1,0 +1,28 @@
+{
+  "name": "validator",
+  "version": "0.1.0",
+  "description": "Simple JS object validator",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jasmine-node test --verbose --matchall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/developerdizzle/validator.git"
+  },
+  "keywords": [
+    "javascript",
+    "validation",
+    "json",
+    "object"
+  ],
+  "author": "developerdizzle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/developerdizzle/validator/issues"
+  },
+  "homepage": "https://github.com/developerdizzle/validator",
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
+  }
+}
