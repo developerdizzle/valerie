@@ -10,7 +10,7 @@ var truth = function truth(value) {
     return value;
 };
 
-describe('validator', function() {
+describe('object validator', function() {
     it('returns undefined if no errors', function() {
         var v = new Validator({
             foo: truth
@@ -22,14 +22,16 @@ describe('validator', function() {
         
         var errors = v(data);
         
-        expect(errors).toBe(undefined);
+        expect(errors).not.toBeDefined();
     });
 
-    it('includes subobjects in result whether valid or not', function() {
+    it('includes subobjects in result if properties are not valid', function() {
         var v = new Validator({
             foo: {
                 bar: truth,
-                baz: truth
+                baz: {
+                    quz: truth
+                }
             }
         });
         
@@ -38,6 +40,7 @@ describe('validator', function() {
         var errors = v(data);
         
         expect(errors.foo).toBeDefined();
+        expect(errors.foo.baz).toBeDefined();
     });
     
     it('validates subobjects', function() {
@@ -56,18 +59,46 @@ describe('validator', function() {
         
         var errors = v(data);
         
-        expect(errors.foo.bar).toEqual(undefined);
+        expect(errors.foo.bar).not.toBeDefined();
         expect(errors.foo.baz).toEqual(['truth']);
     });
 });
 
 describe('required validator', function() {
-    it('finds a required property', function() {
+    it('finds undefined properties', function() {
         var v = new Validator({
             name: required
         });
         
         var data = {};
+        
+        var errors = v(data);
+        
+        expect(errors.name).toEqual(['required']);
+    });
+
+    it('finds empty strings', function() {
+        var v = new Validator({
+            name: required
+        });
+        
+        var data = {
+            name: ''
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.name).toEqual(['required']);
+    });
+
+    it('finds empty arrays', function() {
+        var v = new Validator({
+            name: required
+        });
+        
+        var data = {
+            name: []
+        };
         
         var errors = v(data);
         
@@ -89,6 +120,18 @@ describe('range validator', function() {
         
         expect(errors.age).toEqual(['range']);
     });
+
+    it('does not validate if property is undefined', function() {
+        var v = new Validator({
+            age: validAge
+        });
+        
+        var data = { };
+        
+        var errors = v(data);
+        
+        expect(errors).toEqual(undefined);
+    });
 });
 
 describe('oneOf validator', function() {
@@ -105,6 +148,18 @@ describe('oneOf validator', function() {
         
         expect(errors.color).toEqual(['oneOf']);
     });
+
+    it('does not validate if property is undefined', function() {
+        var v = new Validator({
+            color: validColor
+        });
+        
+        var data = { };
+        
+        var errors = v(data);
+        
+        expect(errors).toEqual(undefined);
+    });
 });
 
 describe('number validator', function() {
@@ -120,5 +175,17 @@ describe('number validator', function() {
         var errors = v(data);
         
         expect(errors.age).toEqual(['number']);
+    });
+
+    it('does not validate if property is undefined', function() {
+        var v = new Validator({
+            age: number
+        });
+        
+        var data = { };
+        
+        var errors = v(data);
+        
+        expect(errors).toEqual(undefined);
     });
 });
