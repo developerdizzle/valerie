@@ -72,8 +72,13 @@ Validator.validate = function(data, validation, stopOnFail) {
 
 Validator.required = function() {
     return function required(value) {
-        //TODO make this better; accomodate for strings and number
-        return typeof value !== 'undefined';
+        if (typeof value === 'undefined') return false;
+        
+        if (typeof value === 'string' && (value === '' || value.trim() === '')) return false;
+        
+        if (Array.isArray(value) && value.length === 0) return false;
+        
+        return true;
     };
 };
 
