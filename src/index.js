@@ -1,56 +1,3 @@
-/*
-
-var Validator = require('./validator');
-
-var required = Validator.required();
-var validAge = Validator.range(1, 100);
-var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
-
-var validation = {
-    name: {
-        firstName: required,
-        lastName: required
-    },
-    age: [required, validAge],
-    favoriteColor: validColor
-};
-
-var v = new Validator(validation);
-
-v({
-    favoriteColor: 'purple'
-});
-
-
-v({
-    favoriteColor: 'black'
-});
-
-v({
-    name: {
-        firstName: 'dave'
-    },
-    favoriteColor: 'black'
-});
-
-v({ 
-    name: {
-        firstName: 'dave',
-        lastName: 'evad'
-    }
-});
-
-v({ 
-    name: {
-        firstName: 'dave',
-        lastName: 'evad'
-    },
-    age: 50
-});
-
-*/
-
-
 // gives back a function to validate
 function Validator(validation) {
     return function(data, stopOnFail) {
@@ -59,33 +6,6 @@ function Validator(validation) {
         return errors;  
     };
 }
-
-// converts shorthand rules into functional rules
-// Validator.getRules = function(validation) {
-//     if (typeof validation === 'function') return [validation];
-
-//     if (Array.isArray(validation)) {
-//         var rules = [];
-        
-//         validation.forEach(function(val) {
-//             var indexRules = Validator.getRules(val);
-            
-//             rules = rules.concat(indexRules);
-//         });
-        
-//         return rules;
-//     }
-    
-//     if (typeof validation === 'object' && !Array.isArray(validation)) {
-//         var child = {};
-        
-//         for (var property in validation) {
-//             child[property] = Validator.getRules(validation[property]);
-//         }
-        
-//         return child;
-//     }
-// };
 
 // main data processor
 Validator.validate = function(data, validation, stopOnFail) {
@@ -158,7 +78,7 @@ Validator.required = function() {
 };
 
 Validator.number = function() {
-    return function isNumber(value) {
+    return function number(value) {
         if (typeof value === 'undefined') return true;
 
         return !isNaN(value);
@@ -178,14 +98,6 @@ Validator.oneOf = function(options) {
         if (typeof value === 'undefined') return true;
 
         return options.indexOf(value) !== -1;
-    };
-};
-
-Validator.regexMatch = function(regex) {
-    return function regexMatch(value) {
-        if (typeof value === 'undefined') return true;
-
-        return true;
     };
 };
 
