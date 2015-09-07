@@ -2,7 +2,7 @@
 
 Simple javascript object validator
 
-The goal of this project is to provide a simple, intuitive, extensible, and independent javascript object validation library that can be used both client- and server-side.validator
+The goal of this project is to provide a simple, intuitive, extensible, and independent javascript object validation library that can be used both client- and server-side.
 
 ## Usage
 
