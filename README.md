@@ -6,7 +6,7 @@ The goal of this project is to provide a simple, intuitive, extensible, and inde
 
 ## Install
 ```
- npm i --save validator
+ npm i --save valerie 
 ```
 
 ## Usage
