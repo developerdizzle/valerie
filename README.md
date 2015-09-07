@@ -4,6 +4,11 @@ Simple javascript object validator
 
 The goal of this project is to provide a simple, intuitive, extensible, and independent javascript object validation library that can be used both client- and server-side.
 
+## Install
+```
+ npm i --save valerie 
+```
+
 ## Usage
 
 Object that we want to validate
@@ -20,7 +25,7 @@ var input = {
 
 Export the class
 ```
-var Validator = require('./src/index');
+var Validator = require('validator');
 ```
 
 Assign some simple validators (or create your own).
