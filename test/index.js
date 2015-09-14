@@ -65,6 +65,20 @@ describe('object validator', function() {
 });
 
 describe('required validator', function() {
+    it('passes if property has a value', function() {
+        var v = new Validator({
+            name: required
+        });
+        
+        var data = {
+            name: 'foo'
+        };
+        
+        var errors = v(data);
+        
+        expect(errors).not.toBeDefined();
+    });
+    
     it('finds undefined properties', function() {
         var v = new Validator({
             name: required
@@ -103,6 +117,34 @@ describe('required validator', function() {
         var errors = v(data);
         
         expect(errors.name).toEqual(['required']);
+    });
+
+    it('can contain a custom message', function() {
+        var v = new Validator({
+            name: Validator.required('name is required')
+        });
+        
+        var data = {
+            name: []
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.name).toEqual(['name is required']);
+    });
+    
+    it('can contain a custom message with {property} parameter', function() {
+        var v = new Validator({
+            name: Validator.required('{property} is required')
+        });
+        
+        var data = {
+            name: []
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.name).toEqual(['name is required']);
     });
 });
 
