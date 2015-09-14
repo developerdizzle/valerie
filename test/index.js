@@ -187,29 +187,13 @@ describe('required validator', function() {
             name: Validator.required('name is required')
         });
         
-        var data = {
-            name: []
-        };
+        var data = { };
         
         var errors = v(data);
         
         expect(errors.name).toEqual(['name is required']);
     });
-    
-    it('can contain a custom message with {property} parameter', function() {
-        var v = new Validator({
-            name: Validator.required('{property} is required')
-        });
-        
-        var data = {
-            name: []
-        };
-        
-        var errors = v(data);
-        
-        expect(errors.name).toEqual(['name is required']);
-    });
-    
+
     it('can contain a custom message as a function', function() {
         var v = new Validator({
             name: Validator.required(function(property) {
@@ -217,9 +201,7 @@ describe('required validator', function() {
             })
         });
         
-        var data = {
-            name: []
-        };
+        var data = { };
         
         var errors = v(data);
         
