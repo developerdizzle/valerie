@@ -27,23 +27,17 @@ Validator.validate = function(data, validation, stopOnFail) {
     // do this so that we can still validate subobjects
     if (typeof data === 'undefined') data = {};
     
-    //console.log('validateObject', data, validation);
-
     for (var property in validation) {
         var value = data[property];
         var rule = validation[property];
         
         // sub objects
         if (typeof rule === 'object' && !Array.isArray(rule)) {
-            // console.log(property + ' is a subobject');
-            
             var subvalidation = Validator.validate(value, rule, stopOnFail);
             
             if (typeof subvalidation !== 'undefined') {
                 errors[property] = subvalidation;
 
-                console.log('errors[property]', property, errors[property]);
-                
                 //TODO not working
                 if (errors[property].length && stopOnFail) {
                     console.log('should be returning');
@@ -62,8 +56,6 @@ Validator.validate = function(data, validation, stopOnFail) {
         if (Array.isArray(rule)) {
             for (var i=0; i<rule.length; i++) {
                 var r = rule[i];
-                
-                // console.log('testing', property, r.name, value);
                 
                 var passed = r(value);
                 
