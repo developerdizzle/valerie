@@ -209,6 +209,22 @@ describe('required validator', function() {
         
         expect(errors.name).toEqual(['name is required']);
     });
+    
+    it('can contain a custom message as a function', function() {
+        var v = new Validator({
+            name: Validator.required(function(property) {
+                return property + ' is required';
+            })
+        });
+        
+        var data = {
+            name: []
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.name).toEqual(['name is required']);
+    });
 });
 
 describe('range validator', function() {
