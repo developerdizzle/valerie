@@ -7,6 +7,19 @@ function Validator(validation) {
     };
 }
 
+// first helper method
+Validator.first = function(errors) {
+    for (var key in errors) {
+        var value = errors[key];
+        
+        if (Array.isArray(value)) return value[0];
+        
+        if (typeof value === 'object') return Validator.first(value);
+    }
+    
+    return undefined;
+};
+
 // main data processor
 Validator.validate = function(data, validation, stopOnFail) {
     var errors = {};
