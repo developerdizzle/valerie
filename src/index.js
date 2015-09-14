@@ -62,7 +62,7 @@ Validator.validate = function(data, validation, stopOnFail) {
                 if (!passed) {
                     errors[property] = errors[property] || [];
                     
-                    var message = (r.message || r.name).replace('{property}', property);
+                    var message = (r.message ? (typeof r.message === 'function' ? r.message(property) : r.message) : r.name).replace('{property}', property);
                     
                     errors[property].push(message);
                     
@@ -88,7 +88,7 @@ Validator.required = function(message) {
         return true;
     };
     
-    rule.message = message || 'required';
+    rule.message = message ||  'required';
     
     return rule;
 };
