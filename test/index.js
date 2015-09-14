@@ -10,6 +10,63 @@ var truth = function truth(value) {
     return value;
 };
 
+describe('validator class', function() {
+
+    describe('first method', function() {
+        it('returns the first error message', function() {
+            var v = new Validator({
+                foo: truth
+            });
+            
+            var data = { 
+                foo: false
+            };
+            
+            var errors = v(data);
+            
+            var first = Validator.first(errors);
+            
+            expect(first).toBe('truth');
+        });
+        
+        it('returns undefined if no errors', function() {
+            var v = new Validator({
+                foo: truth
+            });
+            
+            var data = { 
+                foo: true
+            };
+            
+            var errors = v(data);
+            
+            var first = Validator.first(errors);
+            
+            expect(first).not.toBeDefined();
+        });
+        
+        it('only returns one error message', function() {
+            var v = new Validator({
+                foo: truth,
+                bar: truth
+            });
+            
+            var data = { 
+                foo: false,
+                bar: false,
+            };
+            
+            var errors = v(data);
+            
+            var first = Validator.first(errors);
+            
+            var type = typeof first;
+            
+            expect(type).toBe('string');
+        });
+    });
+});
+
 describe('object validator', function() {
     it('returns undefined if no errors', function() {
         var v = new Validator({
@@ -61,6 +118,12 @@ describe('object validator', function() {
         
         expect(errors.foo.bar).not.toBeDefined();
         expect(errors.foo.baz).toEqual(['truth']);
+    });
+    
+    it('has first method', function() {
+        var type = typeof Validator.first;
+        
+        expect(type).toBe('function');
     });
 });
 
