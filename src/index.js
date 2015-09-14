@@ -57,7 +57,9 @@ Validator.validate = function(data, validation, stopOnFail) {
                 if (!passed) {
                     errors[property] = errors[property] || [];
                     
-                    errors[property].push(r.name);
+                    var message = (r.message || r.name).replace('{property}', property);
+                    
+                    errors[property].push(message);
                     
                     if (stopOnFail) return errors;
                 }
@@ -70,8 +72,8 @@ Validator.validate = function(data, validation, stopOnFail) {
 
 // validation rules
 
-Validator.required = function() {
-    return function required(value) {
+Validator.required = function(message) {
+    var rule = function required(value) {
         if (typeof value === 'undefined') return false;
         
         if (typeof value === 'string' && (value === '' || value.trim() === '')) return false;
@@ -80,6 +82,10 @@ Validator.required = function() {
         
         return true;
     };
+    
+    rule.message = message || 'required';
+    
+    return rule;
 };
 
 Validator.number = function() {
