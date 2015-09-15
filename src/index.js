@@ -7,7 +7,7 @@ function Validator(validation) {
     };
 }
 
-// first helper method
+// helper methods
 Validator.first = function(errors) {
     for (var key in errors) {
         var value = errors[key];
@@ -78,7 +78,7 @@ Validator.validate = function(data, validation, stopOnFail) {
 // validation rules
 
 Validator.required = function(message) {
-    var rule = function required(value) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return false;
         
         if (typeof value === 'string' && (value === '' || value.trim() === '')) return false;
@@ -93,28 +93,40 @@ Validator.required = function(message) {
     return rule;
 };
 
-Validator.number = function() {
-    return function number(value) {
+Validator.number = function(message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
 
         return !isNaN(value);
     };
+    
+    rule.message = message ||  'number';
+    
+    return rule;
 };
 
-Validator.range = function(lower, upper) {
-    return function range(value) {
+Validator.range = function(lower, upper, message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
         
         return value >= lower && value <= upper;
     };
+    
+    rule.message = message ||  'range';
+    
+    return rule;
 };
 
-Validator.oneOf = function(options) {
-    return function oneOf(value) {
+Validator.oneOf = function(options, message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
 
         return options.indexOf(value) !== -1;
     };
+    
+    rule.message = message ||  'oneOf';
+    
+    return rule;
 };
 
 module.exports = Validator;
