@@ -235,6 +235,36 @@ describe('range validator', function() {
         
         expect(errors).toEqual(undefined);
     });
+
+    it('can contain a custom message', function() {
+        var v = new Validator({
+            age: Validator.range(0, 100, 'invalid age')
+        });
+        
+        var data = { 
+            age: 200
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.age).toEqual(['invalid age']);
+    });
+
+    it('can contain a custom message as a function', function() {
+        var v = new Validator({
+            age: Validator.range(0, 100, function(property) {
+                return 'invalid ' + property;
+            })
+        });
+        
+        var data = { 
+            age: 200
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.age).toEqual(['invalid age']);
+    });
 });
 
 describe('oneOf validator', function() {
@@ -262,6 +292,36 @@ describe('oneOf validator', function() {
         var errors = v(data);
         
         expect(errors).toEqual(undefined);
+    });
+
+    it('can contain a custom message', function() {
+        var v = new Validator({
+            color: Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color')
+        });
+        
+        var data = { 
+            color: 'potato'
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.color).toEqual(['invalid color']);
+    });
+
+    it('can contain a custom message as a function', function() {
+        var v = new Validator({
+            color: Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], function(property) {
+                return 'invalid ' + property;
+            })
+        });
+        
+        var data = { 
+            color: 'potato'
+        };
+        
+        var errors = v(data);
+        
+        expect(errors.color).toEqual(['invalid color']);
     });
 });
 
