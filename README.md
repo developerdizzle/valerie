@@ -20,15 +20,15 @@ var input = {
 
 Export the class
 ```
-var Validator = require('./src/index');
+var Valerie = require('valerie');
 ```
 
 Assign some simple validators (or create your own).
 ```
-var required = Validator.required();
-var number = Validator.number();
-var validAge = Validator.range(1, 100);
-var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
+var required = Valerie.required();
+var number = Valerie.number();
+var validAge = Valerie.range(1, 100);
+var validColor = Valerie.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
 ```
 These are functions that take a single value parameter, to validate, and return true (valid) or false (invalid)
 
@@ -48,7 +48,7 @@ var schema = {
 
 Create the object validator, which is a function taking a single object parameter, and returns another object containing the errors, if any, or `undefined`, if there are no errors and our object is valid.
 ```
-var validate = new Validator(schema);
+var validate = new Valerie(schema);
 ```
 
 Validate
@@ -71,5 +71,7 @@ Output:
 ## TODO:
 
 * Allow custom error messages
-* Include exapmles of client- and server-side usage
+* Include examples of client- and server-side usage
 * Add more rules
+* Provide functionality to get first error
+* Provide functionality to turn errors into an array
