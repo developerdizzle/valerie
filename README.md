@@ -1,8 +1,8 @@
-# validator [![Build Status](https://travis-ci.org/developerdizzle/validator.svg?branch=master)](https://travis-ci.org/developerdizzle/validator)
+# valerie [![Build Status](https://travis-ci.org/developerdizzle/valerie.svg?branch=master)](https://travis-ci.org/developerdizzle/valerie)
 
 Simple javascript object validator
 
-The goal of this project is to provide a simple, intuitive, extensible, and independent javascript object validation library that can be used both client- and server-side.
+The goal of this project is to provide a simple, intuitive, extensible, independent, and isomorphic javascript object validation library.
 
 ## Usage
 
@@ -68,4 +68,8 @@ Output:
 }
 ```
 
-TODO: Show real-world examples of client- and server-side error usage.
+## TODO:
+
+* Allow custom error messages
+* Include exapmles of client- and server-side usage
+* Add more rules
