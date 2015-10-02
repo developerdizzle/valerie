@@ -7,6 +7,19 @@ function Validator(validation) {
     };
 }
 
+// helper methods
+Validator.first = function(errors) {
+    for (var key in errors) {
+        var value = errors[key];
+        
+        if (Array.isArray(value)) return value[0];
+        
+        if (typeof value === 'object') return Validator.first(value);
+    }
+    
+    return undefined;
+};
+
 // main data processor
 Validator.validate = function(data, validation, stopOnFail) {
     var errors = {};
@@ -14,23 +27,17 @@ Validator.validate = function(data, validation, stopOnFail) {
     // do this so that we can still validate subobjects
     if (typeof data === 'undefined') data = {};
     
-    //console.log('validateObject', data, validation);
-
     for (var property in validation) {
         var value = data[property];
         var rule = validation[property];
         
         // sub objects
         if (typeof rule === 'object' && !Array.isArray(rule)) {
-            // console.log(property + ' is a subobject');
-            
             var subvalidation = Validator.validate(value, rule, stopOnFail);
             
             if (typeof subvalidation !== 'undefined') {
                 errors[property] = subvalidation;
 
-                console.log('errors[property]', property, errors[property]);
-                
                 //TODO not working
                 if (errors[property].length && stopOnFail) {
                     console.log('should be returning');
@@ -50,14 +57,14 @@ Validator.validate = function(data, validation, stopOnFail) {
             for (var i=0; i<rule.length; i++) {
                 var r = rule[i];
                 
-                // console.log('testing', property, r.name, value);
-                
                 var passed = r(value);
                 
                 if (!passed) {
                     errors[property] = errors[property] || [];
                     
-                    errors[property].push(r.name);
+                    var message = (r.message ? (typeof r.message === 'function' ? r.message(property) : r.message) : r.name);
+                    
+                    errors[property].push(message);
                     
                     if (stopOnFail) return errors;
                 }
@@ -70,8 +77,8 @@ Validator.validate = function(data, validation, stopOnFail) {
 
 // validation rules
 
-Validator.required = function() {
-    return function required(value) {
+Validator.required = function(message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return false;
         
         if (typeof value === 'string' && (value === '' || value.trim() === '')) return false;
@@ -80,30 +87,46 @@ Validator.required = function() {
         
         return true;
     };
+    
+    rule.message = message ||  'required';
+    
+    return rule;
 };
 
-Validator.number = function() {
-    return function number(value) {
+Validator.number = function(message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
 
         return !isNaN(value);
     };
+    
+    rule.message = message ||  'number';
+    
+    return rule;
 };
 
-Validator.range = function(lower, upper) {
-    return function range(value) {
+Validator.range = function(lower, upper, message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
         
         return value >= lower && value <= upper;
     };
+    
+    rule.message = message ||  'range';
+    
+    return rule;
 };
 
-Validator.oneOf = function(options) {
-    return function oneOf(value) {
+Validator.oneOf = function(options, message) {
+    var rule = function(value) {
         if (typeof value === 'undefined') return true;
 
         return options.indexOf(value) !== -1;
     };
+    
+    rule.message = message ||  'oneOf';
+    
+    return rule;
 };
 
 module.exports = Validator;
