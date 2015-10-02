@@ -40,7 +40,7 @@ Validator.validate = function(data, validation, stopOnFail) {
 
                 //TODO not working
                 if (errors[property].length && stopOnFail) {
-                    console.log('should be returning');
+                    //console.log('should be returning');
                     
                     return errors;
                 }
