@@ -1,28 +1,15 @@
 // gives back a function to validate
 function Validator(validation) {
     return function(data, stopOnFail) {
-        var errors = Validator.validate(data, validation, stopOnFail);
+        var errors = Validator.validate("", data, validation, stopOnFail);
 
         return errors;  
     };
 }
 
-// helper methods
-Validator.first = function(errors) {
-    for (var key in errors) {
-        var value = errors[key];
-        
-        if (Array.isArray(value)) return value[0];
-        
-        if (typeof value === 'object') return Validator.first(value);
-    }
-    
-    return undefined;
-};
-
 // main data processor
-Validator.validate = function(data, validation, stopOnFail) {
-    var errors = {};
+Validator.validate = function(path, data, validation, stopOnFail) {
+    var errors = [];
     
     // do this so that we can still validate subobjects
     if (typeof data === 'undefined') data = {};
@@ -31,26 +18,22 @@ Validator.validate = function(data, validation, stopOnFail) {
         var value = data[property];
         var rule = validation[property];
         
+        var propertyPath = (path ? path + "." : "") + property;
+
         // sub objects
         if (typeof rule === 'object' && !Array.isArray(rule)) {
-            var subvalidation = Validator.validate(value, rule, stopOnFail);
+            var subvalidation = Validator.validate(propertyPath, value, rule, stopOnFail);
             
-            if (typeof subvalidation !== 'undefined') {
-                errors[property] = subvalidation;
+            if (subvalidation.length) {
+                errors = errors.concat(subvalidation);
 
                 //TODO not working
-                if (errors[property].length && stopOnFail) {
-                    //console.log('should be returning');
-                    
-                    return errors;
-                }
+                if (stopOnFail && errors.length) return errors;
             }
         }
         
         // single validation rule - just convert it to an array and process it below
-        if (typeof rule === 'function') {
-            rule = [rule];
-        }
+        if (typeof rule === 'function') rule = [rule];
 
         // process actual validation rules
         if (Array.isArray(rule)) {
@@ -60,11 +43,12 @@ Validator.validate = function(data, validation, stopOnFail) {
                 var passed = r(value);
                 
                 if (!passed) {
-                    errors[property] = errors[property] || [];
-                    
                     var message = (r.message ? (typeof r.message === 'function' ? r.message(property) : r.message) : r.name);
                     
-                    errors[property].push(message);
+                    errors.push({
+                        property: propertyPath,
+                        message: message
+                    });
                     
                     if (stopOnFail) return errors;
                 }
@@ -72,7 +56,7 @@ Validator.validate = function(data, validation, stopOnFail) {
         }
     }
     
-    return Object.keys(errors).length !== 0 ? errors : undefined;
+    return errors;
 };
 
 // validation rules

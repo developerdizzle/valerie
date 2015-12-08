@@ -7,68 +7,12 @@ var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'ye
 
 // simple control validator used for testing
 var truth = function truth(value) {
-    return value;
+    return value || false;
 };
 
-describe('validator class', function() {
-
-    describe('first method', function() {
-        it('returns the first error message', function() {
-            var v = new Validator({
-                foo: truth
-            });
-            
-            var data = { 
-                foo: false
-            };
-            
-            var errors = v(data);
-            
-            var first = Validator.first(errors);
-            
-            expect(first).toBe('truth');
-        });
-        
-        it('returns undefined if no errors', function() {
-            var v = new Validator({
-                foo: truth
-            });
-            
-            var data = { 
-                foo: true
-            };
-            
-            var errors = v(data);
-            
-            var first = Validator.first(errors);
-            
-            expect(first).not.toBeDefined();
-        });
-        
-        it('only returns one error message', function() {
-            var v = new Validator({
-                foo: truth,
-                bar: truth
-            });
-            
-            var data = { 
-                foo: false,
-                bar: false,
-            };
-            
-            var errors = v(data);
-            
-            var first = Validator.first(errors);
-            
-            var type = typeof first;
-            
-            expect(type).toBe('string');
-        });
-    });
-});
-
+// tests
 describe('object validator', function() {
-    it('returns undefined if no errors', function() {
+    it('returns empty array if no errors', function() {
         var v = new Validator({
             foo: truth
         });
@@ -79,10 +23,10 @@ describe('object validator', function() {
         
         var errors = v(data);
         
-        expect(errors).not.toBeDefined();
+        expect(errors.length).toBe(0);
     });
 
-    it('includes subobjects in result if properties are not valid', function() {
+    it('returns errors if there are any', function() {
         var v = new Validator({
             foo: {
                 bar: truth,
@@ -96,8 +40,8 @@ describe('object validator', function() {
         
         var errors = v(data);
         
-        expect(errors.foo).toBeDefined();
-        expect(errors.foo.baz).toBeDefined();
+        expect(Array.isArray(errors)).toBe(true);
+        expect(errors.length).toBeGreaterThan(0);
     });
     
     it('validates subobjects', function() {
@@ -116,14 +60,10 @@ describe('object validator', function() {
         
         var errors = v(data);
         
-        expect(errors.foo.bar).not.toBeDefined();
-        expect(errors.foo.baz).toEqual(['truth']);
-    });
-    
-    it('has first method', function() {
-        var type = typeof Validator.first;
-        
-        expect(type).toBe('function');
+        expect(errors[0]).toEqual({
+            property: 'foo.baz',
+            message: 'truth'
+        });
     });
 });
 
@@ -139,7 +79,7 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors).not.toBeDefined();
+        expect(errors.length).toBe(0);
     });
     
     it('finds undefined properties', function() {
@@ -151,7 +91,10 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors.name).toEqual(['required']);
+        expect(errors[0]).toEqual({
+            property: 'name',
+            message: 'required'
+        });
     });
 
     it('finds empty strings', function() {
@@ -165,7 +108,10 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors.name).toEqual(['required']);
+        expect(errors[0]).toEqual({
+            property: 'name',
+            message: 'required'
+        });
     });
 
     it('finds empty arrays', function() {
@@ -179,7 +125,10 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors.name).toEqual(['required']);
+        expect(errors[0]).toEqual({
+            property: 'name',
+            message: 'required'
+        });
     });
 
     it('can contain a custom message', function() {
@@ -191,7 +140,10 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors.name).toEqual(['name is required']);
+        expect(errors[0]).toEqual({
+            property: 'name',
+            message: 'name is required'
+        });
     });
 
     it('can contain a custom message as a function', function() {
@@ -205,7 +157,10 @@ describe('required validator', function() {
         
         var errors = v(data);
         
-        expect(errors.name).toEqual(['name is required']);
+        expect(errors[0]).toEqual({
+            property: 'name',
+            message: 'name is required'
+        });
     });
 });
 
@@ -221,7 +176,10 @@ describe('range validator', function() {
         
         var errors = v(data);
         
-        expect(errors.age).toEqual(['range']);
+        expect(errors[0]).toEqual({
+            property: 'age',
+            message: 'range'
+        });
     });
 
     it('does not validate if property is undefined', function() {
@@ -233,7 +191,7 @@ describe('range validator', function() {
         
         var errors = v(data);
         
-        expect(errors).toEqual(undefined);
+        expect(errors.length).toEqual(0);
     });
 
     it('can contain a custom message', function() {
@@ -247,7 +205,10 @@ describe('range validator', function() {
         
         var errors = v(data);
         
-        expect(errors.age).toEqual(['invalid age']);
+        expect(errors[0]).toEqual({
+            property: 'age',
+            message: 'invalid age'
+        });
     });
 
     it('can contain a custom message as a function', function() {
@@ -263,7 +224,10 @@ describe('range validator', function() {
         
         var errors = v(data);
         
-        expect(errors.age).toEqual(['invalid age']);
+        expect(errors[0]).toEqual({
+            property: 'age',
+            message: 'invalid age'
+        });
     });
 });
 
@@ -279,7 +243,10 @@ describe('oneOf validator', function() {
         
         var errors = v(data);
         
-        expect(errors.color).toEqual(['oneOf']);
+        expect(errors[0]).toEqual({
+            property: 'color',
+            message: 'oneOf'
+        });
     });
 
     it('does not validate if property is undefined', function() {
@@ -291,7 +258,7 @@ describe('oneOf validator', function() {
         
         var errors = v(data);
         
-        expect(errors).toEqual(undefined);
+        expect(errors.length).toEqual(0);
     });
 
     it('can contain a custom message', function() {
@@ -305,7 +272,10 @@ describe('oneOf validator', function() {
         
         var errors = v(data);
         
-        expect(errors.color).toEqual(['invalid color']);
+        expect(errors[0]).toEqual({
+            property: 'color',
+            message: 'invalid color'
+        });
     });
 
     it('can contain a custom message as a function', function() {
@@ -321,7 +291,10 @@ describe('oneOf validator', function() {
         
         var errors = v(data);
         
-        expect(errors.color).toEqual(['invalid color']);
+        expect(errors[0]).toEqual({
+            property: 'color',
+            message: 'invalid color'
+        });
     });
 });
 
@@ -337,7 +310,10 @@ describe('number validator', function() {
         
         var errors = v(data);
         
-        expect(errors.age).toEqual(['number']);
+        expect(errors[0]).toEqual({
+            property: 'age',
+            message: 'number'
+        });
     });
 
     it('does not validate if property is undefined', function() {
@@ -349,6 +325,6 @@ describe('number validator', function() {
         
         var errors = v(data);
         
-        expect(errors).toEqual(undefined);
+        expect(errors.length).toEqual(0);
     });
 });
