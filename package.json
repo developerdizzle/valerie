@@ -1,6 +1,6 @@
 {
   "name": "valerie",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Simple JS object validator",
   "main": "src/index.js",
   "scripts": {
