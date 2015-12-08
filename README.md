@@ -28,7 +28,7 @@ Assign some simple validators (or create your own).
 var required = Valerie.required();
 var number = Valerie.number();
 var validAge = Valerie.range(1, 100);
-var validColor = Valerie.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
+var validColor = Valerie.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color');   //last parameter is a custom message!
 ```
 These are functions that take a single value parameter, to validate, and return true (valid) or false (invalid)
 
@@ -67,15 +67,12 @@ Output:
     },
     {
         property: 'favoriteColor',
-        message: 'oneOf'
+        message: 'invalid color'
     }
 ]
 ```
 
 ## TODO:
 
-* Allow custom error messages
 * Include examples of client- and server-side usage
 * Add more rules
-* Provide functionality to get first error
-* Provide functionality to turn errors into an array
