@@ -46,7 +46,7 @@ var schema = {
 };
 ```
 
-Create the object validator, which is a function taking a single object parameter, and returns another object containing the errors, if any, or `undefined`, if there are no errors and our object is valid.
+Create the object validator, which is a function taking a single object parameter, and returns an array containing the property paths and error messages errors, if any, or an empty array if there are no errors and our object is valid.
 ```
 var validate = new Valerie(schema);
 ```
@@ -60,12 +60,16 @@ console.log(errors);
 
 Output:
 ```
-{
-    name {
-        last: 'required'
+[
+    {
+        property: 'name.last',
+        message: 'required'
     },
-    validColor: 'oneOf'
-}
+    {
+        property: 'favoriteColor',
+        message: 'oneOf'
+    }
+]
 ```
 
 ## TODO:
