@@ -6,7 +6,11 @@ function Validator(validation) {
         
         console.log('promises', promises);
 
-        return Promise.all(promises);
+        return Promise.all(promises).then(function(errors) {
+            return errors.filter(function(error) {
+               return error;
+            });
+        });
     };
 }
 
@@ -56,13 +60,13 @@ Validator.required = function(message) {
     var rule = function(path, value) {
         var data = { path: path, message: message };
         
-        if (typeof value === 'undefined') return Promise.reject(data);
+        if (typeof value === 'undefined') return Promise.resolve(data);
         
-        if (typeof value === 'string' && (value === '' || value.trim() === '')) return Promise.reject(data);
+        if (typeof value === 'string' && (value === '' || value.trim() === '')) return Promise.resolve(data);
         
-        if (Array.isArray(value) && value.length === 0) return Promise.reject(data);
+        if (Array.isArray(value) && value.length === 0) return Promise.resolve(data);
         
-        return Promise.resolve(data);
+        return Promise.resolve();
     };
     
     return rule;
@@ -74,9 +78,9 @@ Validator.number = function(message) {
     var rule = function(path, value) {
         var data = { path: path, message: message };
         
-        if (typeof value === 'undefined') return Promise.resolve(data);
+        if (typeof value === 'undefined') return Promise.resolve();
 
-        return !isNaN(value) ? Promise.resolve(data) : Promise.reject(data);
+        return !isNaN(value) ? Promise.resolve(data) : Promise.resolve(data);
     };
     
     return rule;
@@ -88,9 +92,9 @@ Validator.range = function(lower, upper, message) {
     var rule = function(path, value) {
         var data = { path: path, message: message };
         
-        if (typeof value === 'undefined') return Promise.resolve(data);
+        if (typeof value === 'undefined') return Promise.resolve();
         
-        return value >= lower && value <= upper ? Promise.resolve(data) : Promise.reject(data);
+        return value >= lower && value <= upper ? Promise.resolve() : Promise.resolve(data);
     };
     
     return rule;
@@ -102,9 +106,9 @@ Validator.oneOf = function(options, message) {
     var rule = function(path, value) {
         var data = { path: path, message: message };
         
-        if (typeof value === 'undefined') return Promise.resolve(data);
+        if (typeof value === 'undefined') return Promise.resolve();
 
-        return options.indexOf(value) !== -1 ? Promise.resolve(data) : Promise.reject(data);
+        return options.indexOf(value) !== -1 ? Promise.resolve() : Promise.resolve(data);
     };
     
     return rule;

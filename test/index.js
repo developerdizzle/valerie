@@ -9,12 +9,12 @@ var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'ye
 var truth = function truth(path, value) {
     var data = { path: path, message: 'truth' };
     
-    return value ? Promise.resolve(data) : Promise.reject(data);
+    return value ? Promise.resolve() : Promise.resolve(data);
 };
 
 // tests
 describe('object validator', function() {
-    it('resolves if no errors', function(done) {
+    it('resolves without errors if there are none', function(done) {
         var v = new Validator({
             foo: truth
         });
@@ -23,33 +23,27 @@ describe('object validator', function() {
             foo: true
         };
         
-        v(data).then(function(values) {
-            expect(values[0]).toEqual({
-                path: 'foo',
-                message: 'truth'
-            });
-        })
-        .catch(function(error) {
-            expect(error).toBeUndefined()
-        }).then(done);
+        v(data).then(function(errors) {
+            expect(errors.length).toBe(0);
+            done();
+        });
     });
 
-    it('catches error if there are any', function(done) {
+    it('resolves with errors if there are any', function(done) {
         var v = new Validator({
             foo: truth
         });
         
         var data = { };
         
-        v(data).then(function(values) {
-            expect(values[0]).toBeUndefined();
-        })
-        .catch(function(error) {
-            expect(error).toEqual({
+        v(data).then(function(errors) {
+            expect(errors.length).toBe(1);
+            expect(errors[0]).toEqual({
                 path: 'foo',
                 message: 'truth'
             });
-        }).then(done);
+            done();
+        });
     });
 
     // it('returns a max of one error if stopOnFail is true', function() {
