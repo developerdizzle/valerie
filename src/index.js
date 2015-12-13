@@ -16,34 +16,33 @@ Validator.validate = function(path, data, validation, stopOnFail) {
     
     for (var property in validation) {
         var value = data[property];
-        var rule = validation[property];
+        var rules = validation[property];
         
         var propertyPath = (path ? path + "." : "") + property;
 
         // sub objects
-        if (typeof rule === 'object' && !Array.isArray(rule)) {
-            var subvalidation = Validator.validate(propertyPath, value, rule, stopOnFail);
+        if (typeof rules === 'object' && !Array.isArray(rules)) {
+            var subvalidation = Validator.validate(propertyPath, value, rules, stopOnFail);
             
             if (subvalidation.length) {
                 errors = errors.concat(subvalidation);
 
-                //TODO not working
                 if (stopOnFail && errors.length) return errors;
             }
         }
         
         // single validation rule - just convert it to an array and process it below
-        if (typeof rule === 'function') rule = [rule];
+        if (typeof rules === 'function') rules = [rules];
 
         // process actual validation rules
-        if (Array.isArray(rule)) {
-            for (var i=0; i<rule.length; i++) {
-                var r = rule[i];
+        if (Array.isArray(rules)) {
+            for (var i = 0; i < rules.length; i++) {
+                var rule = rules[i];
                 
-                var passed = r(value);
+                var passed = rule(value);
                 
                 if (!passed) {
-                    var message = (r.message ? (typeof r.message === 'function' ? r.message(property) : r.message) : r.name);
+                    var message = (rule.message ? (typeof rule.message === 'function' ? rule.message(property) : rule.message) : rule.name);
                     
                     errors.push({
                         property: propertyPath,
@@ -72,7 +71,7 @@ Validator.required = function(message) {
         return true;
     };
     
-    rule.message = message ||  'required';
+    rule.message = message || 'required';
     
     return rule;
 };
@@ -84,7 +83,7 @@ Validator.number = function(message) {
         return !isNaN(value);
     };
     
-    rule.message = message ||  'number';
+    rule.message = message || 'number';
     
     return rule;
 };
@@ -96,7 +95,7 @@ Validator.range = function(lower, upper, message) {
         return value >= lower && value <= upper;
     };
     
-    rule.message = message ||  'range';
+    rule.message = message || 'range';
     
     return rule;
 };
@@ -108,7 +107,7 @@ Validator.oneOf = function(options, message) {
         return options.indexOf(value) !== -1;
     };
     
-    rule.message = message ||  'oneOf';
+    rule.message = message || 'oneOf';
     
     return rule;
 };

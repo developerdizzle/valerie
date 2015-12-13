@@ -43,6 +43,20 @@ describe('object validator', function() {
         expect(Array.isArray(errors)).toBe(true);
         expect(errors.length).toBeGreaterThan(0);
     });
+
+    it('returns a max of one error if stopOnFail is true', function() {
+        var v = new Validator({
+            foo: truth,
+            bar: truth,
+            baz: truth
+        });
+        
+        var data = { };
+        
+        var errors = v(data, true);
+        
+        expect(errors.length).toBe(1);
+    });
     
     it('validates subobjects', function() {
         var v = new Validator({
