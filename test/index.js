@@ -15,6 +15,20 @@ var truth = eq(true, 'truth');
 
 // tests
 describe('object validator', function() {
+    it('resolves undefined if there is no validation schema', function(done) {
+        var v = new Validator({ });
+        
+        var data = { 
+            foo: true
+        };
+        
+        v(data).then(function(errors) {
+            expect(errors).toBeUndefined();
+    
+            done();
+        });
+    });
+    
     it('resolves empty array if there are no errors', function(done) {
         var v = new Validator({
             foo: truth
@@ -49,7 +63,7 @@ describe('object validator', function() {
         }).catch(console.error);
     });
 
-    it('returns a max of one error if stopOnFail is true', function(done) {
+    it('resolves a max of one error if stopOnFail is true', function(done) {
         var v = new Validator({
             foo: truth,
             bar: truth

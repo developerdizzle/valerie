@@ -5,6 +5,8 @@ function Validator(validation) {
 }
 
 Validator.validate = function(path, data, validation, stopOnFail) {
+    if (Object.keys(validation).length === 0) return Promise.resolve();
+    
     if (stopOnFail) return Validator.validateFirst(path, data, validation);
     
     var promises = [];
@@ -55,63 +57,39 @@ Validator.validateFirst = function(path, data, validation) {
     var p = 0;
     
     var processProperty = function(property) {
-        console.log('processCurrentProperty', property);
+        if (typeof property === 'undefined') return;
         
-        var value = data[property];
         var rules = validation[property];
         
-        if (typeof rules === 'function') rules = [rules];
+        if (rules.length === 0) return;
         
+        var r = 0;
+        
+        if (!Array.isArray(rules)) rules = [rules];
+        
+        var value = data[property];
         var propertyPath = (path ? path + "." : "") + property;
-        
-        if (Array.isArray(rules)) {
-            var i = 0;
-            
-            var processRule = function(rule) {
-                console.log('processCurrentRule', propertyPath, i, rules.length);
-                
-                if (typeof rule === 'undefined') {
-                    console.log('i > rules.length - 1');
-                    
-                    return;
-                }
-                
-                var result = rule(propertyPath, value);
-                
-                console.log('result', result);
-                
-                return Promise.resolve(result).then(function(error) {
-                    console.log('processRule Promise.resolve rule then', error);
-                    
-                    if (error) {
-                        console.log('processRule returning error', error);
-                        
-                        return Promise.resolve(error);
-                    }
-                    
-                    var nextRule = rules[++i];
-                    
-                    return typeof nextRule !== 'undefined' ? processRule(nextRule) : undefined;
-                });
-            };
-            
-            return processRule(rules[i]).then(function(error) {
-                console.log('processProperty Promise.resolve rule then', error);
-                
-                if (error) {
-                    console.log('processProperty returning error', error);
-                    
-                    return Promise.resolve([error]);
-                }
 
-                var nextProperty = properties[++p];
-                
-                return typeof nextProperty !== 'undefined' ? processProperty(nextProperty) : Promise.resolve([]);
+        var processRule = function(rule) {
+            if (typeof rule === 'undefined') return;
+
+            var result = rule(propertyPath, value);
+            
+            return Promise.resolve(result).then(function(error) {
+                if (error) return error;
+
+                return processRule(rules[++r]);
             });
-        }
+        };
+        
+        return processRule(rules[0]).then(function(error) {
+            if (error) return [error];
+
+            return processProperty(properties[++p]);
+        });
     };
     
-    return processProperty(properties[p]);
+    return processProperty(properties[0]);
 };
 
 // validation rules
