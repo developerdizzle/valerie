@@ -1,20 +1,21 @@
 var Validator = require('../src/index');
 
-var required = Validator.required();
-var number = Validator.number();
-var validAge = Validator.range(1, 100);
-var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
-
 // simple control validator used for testing
-var truth = function truth(path, value) {
-    var data = { path: path, message: 'truth' };
-    
-    return value ? Promise.resolve() : Promise.resolve(data);
+var eq = function eq(target, message) {
+    return function(property, value) {
+        console.log('eq', property, target, value, message);
+        
+        var error = { property: property, message: message || 'eq' };
+        
+        if (value !== target) return error;
+    };
 };
+
+var truth = eq(true, 'truth');
 
 // tests
 describe('object validator', function() {
-    it('resolves without errors if there are none', function(done) {
+    it('resolves empty array if there are no errors', function(done) {
         var v = new Validator({
             foo: truth
         });
@@ -25,11 +26,12 @@ describe('object validator', function() {
         
         v(data).then(function(errors) {
             expect(errors.length).toBe(0);
+    
             done();
         });
     });
 
-    it('resolves with errors if there are any', function(done) {
+    it('resolves with array of errors if there are any', function(done) {
         var v = new Validator({
             foo: truth
         });
@@ -39,49 +41,58 @@ describe('object validator', function() {
         v(data).then(function(errors) {
             expect(errors.length).toBe(1);
             expect(errors[0]).toEqual({
-                path: 'foo',
+                property: 'foo',
                 message: 'truth'
             });
+    
+            done();
+        }).catch(console.error);
+    });
+
+    it('returns a max of one error if stopOnFail is true', function(done) {
+        var v = new Validator({
+            foo: truth,
+            bar: truth
+        });
+        
+        var data = { };
+        
+        v(data, true).then(function(errors) {
+            expect(errors.length).toBe(1);
+            expect(errors[0]).toEqual({
+                property: 'foo',
+                message: 'truth'
+            });
+            
             done();
         });
     });
-
-    // it('returns a max of one error if stopOnFail is true', function() {
+    
+    // it('validates subobjects', function(done) {
     //     var v = new Validator({
-    //         foo: truth,
-    //         bar: truth,
-    //         baz: truth
+    //         foo: {
+    //             bar: truth,
+    //         }
     //     });
         
     //     var data = { };
         
-    //     var errors = v(data, true);
-        
-    //     expect(errors.length).toBe(1);
-    // });
-    
-    // it('validates subobjects', function() {
-    //     var v = new Validator({
-    //         foo: {
-    //             bar: truth,
-    //             baz: truth
-    //         }
-    //     });
-        
-    //     var data = { 
-    //         foo: {
-    //             bar: true
-    //         }
-    //     };
-        
-    //     var errors = v(data);
-        
-    //     expect(errors[0]).toEqual({
-    //         property: 'foo.baz',
-    //         message: 'truth'
+    //     v(data).then(function(errors) {
+    //         expect(errors.length).toBe(1);
+    //         expect(errors[0]).toEqual({
+    //             property: 'foo.bar',
+    //             message: 'truth'
+    //         });
+            
+    //         done();
     //     });
     // });
 });
+
+// var required = Validator.required();
+// var number = Validator.number();
+// var validAge = Validator.range(1, 100);
+// var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
 
 // describe('required validator', function() {
 //     it('passes if property has a value', function() {
