@@ -50,9 +50,6 @@ Validator.validate = function(path, data, validation, stopOnFail) {
 };
 
 Validator.validateFirst = function(path, data, validation) {
-    // do this so that we can still validate subobjects
-    if (typeof data === 'undefined') data = {};
-    
     var properties = Object.keys(validation);
     var p = 0;
     
