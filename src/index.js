@@ -61,7 +61,8 @@ Validator.validateFirst = function(path, data, validation) {
         
         var rules = validation[property];
         
-        if (rules.length === 0) return;
+        if (typeof rules === 'undefined') return;
+        if (Array.isArray(rules) && rules.length === 0) return;
         
         var r = 0;
         
