@@ -9,6 +9,16 @@ Validator.validate = function(path, data, validation, stopOnFail) {
     
     if (stopOnFail) return Validator.validateFirst(path, data, validation);
     
+    var promises = Validator.validateAll(path, data, validation);
+    
+    return Promise.all(promises).then(function(errors) {
+        return errors.filter(function(error) {
+           return error;
+        });
+    });
+};
+
+Validator.validateAll = function validateAll(path, data, validation) {
     var promises = [];
     
     // do this so that we can still validate subobjects
@@ -22,7 +32,7 @@ Validator.validate = function(path, data, validation, stopOnFail) {
 
         // sub objects
         if (typeof rules === 'object' && !Array.isArray(rules)) {
-            var subpromises = Validator.validate(propertyPath, value, rules, stopOnFail);
+            var subpromises = Validator.validateAll(propertyPath, value, rules);
             
             if (subpromises.length) {
                 promises = promises.concat(subpromises);
@@ -35,21 +45,22 @@ Validator.validate = function(path, data, validation, stopOnFail) {
         // process actual validation rules
         if (Array.isArray(rules)) {
             for (var i = 0; i < rules.length; i++) {
-                var promise = rules[i](propertyPath, value);
+                var promise = Promise.resolve(rules[i](value)).then(function(message) {
+                    if (message) return {
+                        property: propertyPath,
+                        message: message
+                    };
+                });
 
                 promises.push(promise);
             }
         }
     }
     
-    return Promise.all(promises).then(function(errors) {
-        return errors.filter(function(error) {
-           return error;
-        });
-    });
+    return promises;
 };
 
-Validator.validateFirst = function(path, data, validation) {
+Validator.validateFirst = function validateFirst(path, data, validation) {
     var properties = Object.keys(validation);
     var p = 0;
     
@@ -58,6 +69,15 @@ Validator.validateFirst = function(path, data, validation) {
         
         var rules = validation[property];
         
+        // subobjects
+        var value = data[property];
+
+        var propertyPath = (path ? path + "." : "") + property;
+
+        if (typeof rules === 'object' && !Array.isArray(rules)) {
+            return Validator.validateFirst(propertyPath, value || { }, rules);
+        }
+        
         if (typeof rules === 'undefined') return;
         if (Array.isArray(rules) && rules.length === 0) return;
         
@@ -65,23 +85,23 @@ Validator.validateFirst = function(path, data, validation) {
         
         if (!Array.isArray(rules)) rules = [rules];
         
-        var value = data[property];
-        var propertyPath = (path ? path + "." : "") + property;
-
         var processRule = function(rule) {
             if (typeof rule === 'undefined') return;
 
-            var result = rule(propertyPath, value);
+            var result = rule(value);
             
-            return Promise.resolve(result).then(function(error) {
-                if (error) return error;
-
+            return Promise.resolve(result).then(function(message) {
+                if (message) return message;
+                
                 return processRule(rules[++r]);
             });
         };
         
-        return processRule(rules[0]).then(function(error) {
-            if (error) return [error];
+        return processRule(rules[0]).then(function(message) {
+            if (message) return [{
+                property: propertyPath,
+                message: message
+            }];
 
             return processProperty(properties[++p]);
         });
@@ -95,16 +115,12 @@ Validator.validateFirst = function(path, data, validation) {
 Validator.required = function(message) {
     message = message || 'required';
     
-    var rule = function(path, value) {
-        var data = { path: path, message: message };
+    var rule = function(value) {
+        if (typeof value === 'undefined') return message;
         
-        if (typeof value === 'undefined') return Promise.resolve(data);
+        if (typeof value === 'string' && (value === '' || value.trim() === '')) return message;
         
-        if (typeof value === 'string' && (value === '' || value.trim() === '')) return Promise.resolve(data);
-        
-        if (Array.isArray(value) && value.length === 0) return Promise.resolve(data);
-        
-        return Promise.resolve();
+        if (Array.isArray(value) && value.length === 0) return message;
     };
     
     return rule;
@@ -113,12 +129,10 @@ Validator.required = function(message) {
 Validator.number = function(message) {
     message = message || 'number';
     
-    var rule = function(path, value) {
-        var data = { path: path, message: message };
-        
-        if (typeof value === 'undefined') return Promise.resolve();
+    var rule = function(value) {
+        if (typeof value === 'undefined') return;
 
-        return !isNaN(value) ? Promise.resolve(data) : Promise.resolve(data);
+        if (!isNaN(value)) return message;
     };
     
     return rule;
@@ -127,12 +141,10 @@ Validator.number = function(message) {
 Validator.range = function(lower, upper, message) {
     message = message || 'range';
     
-    var rule = function(path, value) {
-        var data = { path: path, message: message };
+    var rule = function(value) {
+        if (typeof value === 'undefined') return;
         
-        if (typeof value === 'undefined') return Promise.resolve();
-        
-        return value >= lower && value <= upper ? Promise.resolve() : Promise.resolve(data);
+        if (value < lower || value > upper) return message;
     };
     
     return rule;
@@ -141,12 +153,10 @@ Validator.range = function(lower, upper, message) {
 Validator.oneOf = function(options, message) {
     message = message || 'oneOf';
     
-    var rule = function(path, value) {
-        var data = { path: path, message: message };
-        
-        if (typeof value === 'undefined') return Promise.resolve();
+    var rule = function(value) {
+        if (typeof value === 'undefined') return;
 
-        return options.indexOf(value) !== -1 ? Promise.resolve() : Promise.resolve(data);
+        if (options.indexOf(value) === -1) return message;
     };
     
     return rule;

@@ -2,12 +2,10 @@ var Validator = require('../src/index');
 
 // simple control validator used for testing
 var eq = function eq(target, message) {
-    return function(property, value) {
-        console.log('eq', property, target, value, message);
-        
-        var error = { property: property, message: message || 'eq' };
-        
-        if (value !== target) return error;
+    message = message || 'eq';
+    
+    return function(value) {
+        if (value !== target) return message;
     };
 };
 
@@ -60,7 +58,7 @@ describe('object validator', function() {
             });
     
             done();
-        }).catch(console.error);
+        });
     });
 
     it('resolves a max of one error if stopOnFail is true', function(done) {
@@ -82,25 +80,45 @@ describe('object validator', function() {
         });
     });
     
-    // it('validates subobjects', function(done) {
-    //     var v = new Validator({
-    //         foo: {
-    //             bar: truth,
-    //         }
-    //     });
+    it('validates subobjects', function(done) {
+        var v = new Validator({
+            foo: {
+                bar: truth,
+            }
+        });
         
-    //     var data = { };
+        var data = { };
         
-    //     v(data).then(function(errors) {
-    //         expect(errors.length).toBe(1);
-    //         expect(errors[0]).toEqual({
-    //             property: 'foo.bar',
-    //             message: 'truth'
-    //         });
+        v(data).then(function(errors) {
+            expect(errors.length).toBe(1);
+            expect(errors[0]).toEqual({
+                property: 'foo.bar',
+                message: 'truth'
+            });
             
-    //         done();
-    //     });
-    // });
+            done();
+        });
+    });
+    
+    it('validates subobjects when stopOnFail is true', function(done) {
+        var v = new Validator({
+            foo: {
+                bar: truth,
+            }
+        });
+        
+        var data = { };
+        
+        v(data, true).then(function(errors) {
+            expect(errors.length).toBe(1);
+            expect(errors[0]).toEqual({
+                property: 'foo.bar',
+                message: 'truth'
+            });
+            
+            done();
+        });
+    });    
 });
 
 // var required = Validator.required();
