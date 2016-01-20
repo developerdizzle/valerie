@@ -26,7 +26,7 @@ describe('object validator', function() {
             done();
         });
     });
-    
+
     it('resolves empty array if there are no errors', function(done) {
         var v = new Validator({
             foo: truth
@@ -121,269 +121,156 @@ describe('object validator', function() {
     });    
 });
 
-// var required = Validator.required();
-// var number = Validator.number();
-// var validAge = Validator.range(1, 100);
-// var validColor = Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green']);
+var rules = require('../src/rules');
 
-// describe('required validator', function() {
-//     it('passes if property has a value', function() {
-//         var v = new Validator({
-//             name: required
-//         });
+describe('required validator', function() {
+    it('passes if property has a value', function() {
+        var rule = new rules.Required();
         
-//         var data = {
-//             name: 'foo'
-//         };
+        var error = rule('foo');
         
-//         var errors = v(data);
-        
-//         expect(errors.length).toBe(0);
-//     });
+        expect(error).toBeUndefined();
+    });
     
-//     it('finds undefined properties', function() {
-//         var v = new Validator({
-//             name: required
-//         });
+    it('finds undefined values', function() {
+        var rule = new rules.Required();
         
-//         var data = {};
+        var error = rule(undefined);
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'name',
-//             message: 'required'
-//         });
-//     });
+        expect(error).toEqual('required');
+    });
 
-//     it('finds empty strings', function() {
-//         var v = new Validator({
-//             name: required
-//         });
+    it('finds empty strings', function() {
+        var rule = new rules.Required();
         
-//         var data = {
-//             name: ''
-//         };
+        var error = rule('');
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'name',
-//             message: 'required'
-//         });
-//     });
+        expect(error).toEqual('required');        
+    });
 
-//     it('finds empty arrays', function() {
-//         var v = new Validator({
-//             name: required
-//         });
+    it('finds empty arrays', function() {
+        var rule = new rules.Required();
         
-//         var data = {
-//             name: []
-//         };
+        var error = rule([]);
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'name',
-//             message: 'required'
-//         });
-//     });
+        expect(error).toEqual('required'); 
+    });
 
-//     it('can contain a custom message', function() {
-//         var v = new Validator({
-//             name: Validator.required('name is required')
-//         });
+    it('can contain a custom message', function() {
+        var rule = new rules.Required('name is required');
         
-//         var data = { };
+        var error = rule(undefined);
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'name',
-//             message: 'name is required'
-//         });
-//     });
+        expect(error).toEqual('name is required');
+    });
+});
 
-//     it('can contain a custom message as a function', function() {
-//         var v = new Validator({
-//             name: Validator.required(function(property) {
-//                 return property + ' is required';
-//             })
-//         });
-        
-//         var data = { };
-        
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'name',
-//             message: 'name is required'
-//         });
-//     });
-// });
+// number
 
-// describe('range validator', function() {
-//     it('finds an out-of-range property', function() {
-//         var v = new Validator({
-//             age: validAge
-//         });
+describe('number validator', function() {
+    it('passes if value is a number', function() {
+        var rule = new rules.Number();
         
-//         var data = {
-//             age: 200
-//         };
+        console.log('rule', rule);
         
-//         var errors = v(data);
+        var error = rule(5);
         
-//         expect(errors[0]).toEqual({
-//             property: 'age',
-//             message: 'range'
-//         });
-//     });
+        expect(error).toBeUndefined();
+    });
 
-//     it('does not validate if property is undefined', function() {
-//         var v = new Validator({
-//             age: validAge
-//         });
+    it('passes if value is undefined', function() {
+        var rule = new rules.Number();
         
-//         var data = { };
+        var error = rule(undefined);
         
-//         var errors = v(data);
+        expect(error).toBeUndefined();
+    });
+    
+    it('finds an invalid number property', function() {
+        var rule = new rules.Number();
         
-//         expect(errors.length).toEqual(0);
-//     });
+        var error = rule('foo');
+        
+        expect(error).toEqual('number');
+    });
+    
+    it('can contain a custom message', function() {
+        var rule = new rules.Number('value must be a number');
+        
+        var error = rule('foo');
+        
+        expect(error).toEqual('value must be a number');
+    });
+});
 
-//     it('can contain a custom message', function() {
-//         var v = new Validator({
-//             age: Validator.range(0, 100, 'invalid age')
-//         });
-        
-//         var data = { 
-//             age: 200
-//         };
-        
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'age',
-//             message: 'invalid age'
-//         });
-//     });
+// range
 
-//     it('can contain a custom message as a function', function() {
-//         var v = new Validator({
-//             age: Validator.range(0, 100, function(property) {
-//                 return 'invalid ' + property;
-//             })
-//         });
+describe('range validator', function() {
+    it('passes if value is in range', function() {
+        var rule = new rules.Range(1, 10);
         
-//         var data = { 
-//             age: 200
-//         };
+        var error = rule(5);
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'age',
-//             message: 'invalid age'
-//         });
-//     });
-// });
+        expect(error).toBeUndefined();
+    });
 
-// describe('oneOf validator', function() {
-//     it('finds an out-of-array property', function() {
-//         var v = new Validator({
-//             color: validColor
-//         });
+    it('passes if value is undefined', function() {
+        var rule = new rules.Range(1, 10);
         
-//         var data = {
-//             color: 'magenta'
-//         };
+        var error = rule(undefined);
         
-//         var errors = v(data);
+        expect(error).toBeUndefined();
+    });
+    
+    it('finds an out-of-range property', function() {
+        var rule = new rules.Range(1, 10);
         
-//         expect(errors[0]).toEqual({
-//             property: 'color',
-//             message: 'oneOf'
-//         });
-//     });
+        var error = rule(20);
+        
+        expect(error).toEqual('range');
+    });
 
-//     it('does not validate if property is undefined', function() {
-//         var v = new Validator({
-//             color: validColor
-//         });
+    it('can contain a custom message', function() {
+        var rule = new rules.Range(1, 10, 'invalid number');
         
-//         var data = { };
+        var error = rule(20);
         
-//         var errors = v(data);
-        
-//         expect(errors.length).toEqual(0);
-//     });
+        expect(error).toEqual('invalid number');
+    });
+});
 
-//     it('can contain a custom message', function() {
-//         var v = new Validator({
-//             color: Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color')
-//         });
-        
-//         var data = { 
-//             color: 'potato'
-//         };
-        
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'color',
-//             message: 'invalid color'
-//         });
-//     });
+// oneOf
 
-//     it('can contain a custom message as a function', function() {
-//         var v = new Validator({
-//             color: Validator.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], function(property) {
-//                 return 'invalid ' + property;
-//             })
-//         });
+describe('oneOf validator', function() {
+    it('passes if value is one of the valid options', function() {
+        var rule = rules.OneOf(['red', 'blue', 'yellow']);
         
-//         var data = { 
-//             color: 'potato'
-//         };
+        var error = rule('blue');
         
-//         var errors = v(data);
-        
-//         expect(errors[0]).toEqual({
-//             property: 'color',
-//             message: 'invalid color'
-//         });
-//     });
-// });
+        expect(error).toBeUndefined();
+    });
 
-// describe('number validator', function() {
-//     it('finds an invalid number property', function() {
-//         var v = new Validator({
-//             age: number
-//         });
+    it('passes if value is undefined', function() {
+        var rule = rules.OneOf(['red', 'blue', 'yellow']);
         
-//         var data = {
-//             age: 'potato'
-//         };
+        var error = rule(undefined);
         
-//         var errors = v(data);
+        expect(error).toBeUndefined();
+    });
+    
+    it('finds an out-of-array value', function() {
+        var rule = rules.OneOf(['red', 'blue', 'yellow']);
         
-//         expect(errors[0]).toEqual({
-//             property: 'age',
-//             message: 'number'
-//         });
-//     });
+        var error = rule('orange');
+        
+        expect(error).toEqual('oneOf');
+    });
 
-//     it('does not validate if property is undefined', function() {
-//         var v = new Validator({
-//             age: number
-//         });
+    it('can contain a custom message', function() {
+        var rule = rules.OneOf(['red', 'blue', 'yellow'], 'must be a primary color');
         
-//         var data = { };
+        var error = rule('orange');
         
-//         var errors = v(data);
-        
-//         expect(errors.length).toEqual(0);
-//     });
-// });
+        expect(error).toEqual('must be a primary color');
+    });
+});
