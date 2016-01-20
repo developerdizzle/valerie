@@ -1,15 +1,25 @@
-// gives back a function to validate
 function Validator(validation) {
     return function(data, stopOnFail) {
-        var errors = Validator.validate("", data, validation, stopOnFail);
-
-        return errors;  
+        return Validator.validate("", data, validation, stopOnFail);
     };
 }
 
-// main data processor
 Validator.validate = function(path, data, validation, stopOnFail) {
-    var errors = [];
+    if (Object.keys(validation).length === 0) return Promise.resolve();
+    
+    if (stopOnFail) return Validator.validateFirst(path, data, validation);
+    
+    var promises = Validator.validateAll(path, data, validation);
+    
+    return Promise.all(promises).then(function(errors) {
+        return errors.filter(function(error) {
+           return error;
+        });
+    });
+};
+
+Validator.validateAll = function validateAll(path, data, validation) {
+    var promises = [];
     
     // do this so that we can still validate subobjects
     if (typeof data === 'undefined') data = {};
@@ -22,12 +32,10 @@ Validator.validate = function(path, data, validation, stopOnFail) {
 
         // sub objects
         if (typeof rules === 'object' && !Array.isArray(rules)) {
-            var subvalidation = Validator.validate(propertyPath, value, rules, stopOnFail);
+            var subpromises = Validator.validateAll(propertyPath, value, rules);
             
-            if (subvalidation.length) {
-                errors = errors.concat(subvalidation);
-
-                if (stopOnFail && errors.length) return errors;
+            if (subpromises.length) {
+                promises = promises.concat(subpromises);
             }
         }
         
@@ -37,79 +45,69 @@ Validator.validate = function(path, data, validation, stopOnFail) {
         // process actual validation rules
         if (Array.isArray(rules)) {
             for (var i = 0; i < rules.length; i++) {
-                var rule = rules[i];
-                
-                var passed = rule(value);
-                
-                if (!passed) {
-                    var message = (rule.message ? (typeof rule.message === 'function' ? rule.message(property) : rule.message) : rule.name);
-                    
-                    errors.push({
+                var promise = Promise.resolve(rules[i](value)).then(function(message) {
+                    if (message) return {
                         property: propertyPath,
                         message: message
-                    });
-                    
-                    if (stopOnFail) return errors;
-                }
+                    };
+                });
+
+                promises.push(promise);
             }
         }
     }
     
-    return errors;
+    return promises;
 };
 
-// validation rules
+Validator.validateFirst = function validateFirst(path, data, validation) {
+    var properties = Object.keys(validation);
+    var p = 0;
+    
+    var processProperty = function(property) {
+        if (typeof property === 'undefined') return;
+        
+        var rules = validation[property];
+        
+        // subobjects
+        var value = data[property];
 
-Validator.required = function(message) {
-    var rule = function(value) {
-        if (typeof value === 'undefined') return false;
+        var propertyPath = (path ? path + "." : "") + property;
+
+        if (typeof rules === 'object' && !Array.isArray(rules)) {
+            return Validator.validateFirst(propertyPath, value || { }, rules);
+        }
         
-        if (typeof value === 'string' && (value === '' || value.trim() === '')) return false;
+        if (typeof rules === 'undefined') return;
+        if (Array.isArray(rules) && rules.length === 0) return;
         
-        if (Array.isArray(value) && value.length === 0) return false;
+        var r = 0;
         
-        return true;
+        if (!Array.isArray(rules)) rules = [rules];
+        
+        var processRule = function(rule) {
+            if (typeof rule === 'undefined') return;
+
+            var result = rule(value);
+            
+            return Promise.resolve(result).then(function(message) {
+                if (message) return message;
+                
+                return processRule(rules[++r]);
+            });
+        };
+        
+        return processRule(rules[0]).then(function(message) {
+            if (message) return [{
+                property: propertyPath,
+                message: message
+            }];
+
+            return processProperty(properties[++p]);
+        });
     };
     
-    rule.message = message || 'required';
-    
-    return rule;
-};
-
-Validator.number = function(message) {
-    var rule = function(value) {
-        if (typeof value === 'undefined') return true;
-
-        return !isNaN(value);
-    };
-    
-    rule.message = message || 'number';
-    
-    return rule;
-};
-
-Validator.range = function(lower, upper, message) {
-    var rule = function(value) {
-        if (typeof value === 'undefined') return true;
-        
-        return value >= lower && value <= upper;
-    };
-    
-    rule.message = message || 'range';
-    
-    return rule;
-};
-
-Validator.oneOf = function(options, message) {
-    var rule = function(value) {
-        if (typeof value === 'undefined') return true;
-
-        return options.indexOf(value) !== -1;
-    };
-    
-    rule.message = message || 'oneOf';
-    
-    return rule;
+    return processProperty(properties[0]);
 };
 
 module.exports = Validator;
