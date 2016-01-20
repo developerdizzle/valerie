@@ -32,7 +32,7 @@ var number = rules.Number();
 var validAge = rules.Range(1, 100);
 var validColor = rules.OneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color');   //last parameter is a custom message!
 ```
-These are functions that take a single value parameter, to validate, and return true (valid) or false (invalid)
+These are functions that take a single value parameter, to validate, and return undefined (valid) or a string error message (invalid)
 
 
 Compose the validation schema for our object
