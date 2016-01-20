@@ -25,10 +25,12 @@ var Valerie = require('valerie');
 
 Assign some simple validators (or create your own).
 ```
-var required = Valerie.required();
-var number = Valerie.number();
-var validAge = Valerie.range(1, 100);
-var validColor = Valerie.oneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color');   //last parameter is a custom message!
+var rules = require('valerie/rules');
+
+var required = rules.Required();
+var number = rules.Number();
+var validAge = rules.Range(1, 100);
+var validColor = rules.OneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color');   //last parameter is a custom message!
 ```
 These are functions that take a single value parameter, to validate, and return true (valid) or false (invalid)
 
@@ -52,14 +54,12 @@ var validate = new Valerie(schema);
 ```
 
 Validate
-```
-var errors = validate(input);
+```js
+validate(input).then(errors) {
+    console.log(errors);
+});
 
-console.log(errors);
-```
-
-Output:
-```
+/*
 [
     {
         property: 'name.last',
@@ -70,6 +70,23 @@ Output:
         message: 'invalid color'
     }
 ]
+*/
+
+// or just get the first error
+
+validate(input, true).then(firstError) {
+    console.log(firstError);
+});
+
+/*
+[
+    {
+        property: 'name.last',
+        message: 'required'
+    }
+]
+*/
+
 ```
 
 ## TODO:
