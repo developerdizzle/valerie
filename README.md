@@ -7,7 +7,7 @@ The goal of this project is to provide a simple, intuitive, extensible, independ
 ## Usage
 
 Object that we want to validate
-```
+```js
 var input = {
     id: 10,
     name: {
@@ -19,12 +19,12 @@ var input = {
 ```
 
 Export the class
-```
+```js
 var Valerie = require('valerie');
 ```
 
 Assign some simple validators (or create your own).
-```
+```js
 var rules = require('valerie/rules');
 
 var required = rules.Required();
@@ -36,7 +36,7 @@ These are functions that take a single value parameter, to validate, and return 
 
 
 Compose the validation schema for our object
-```
+```js
 var schema = {
     id: [required, number],
     name: {
@@ -49,7 +49,7 @@ var schema = {
 ```
 
 Create the object validator, which is a function taking a single object parameter, and returns an array containing the property paths and error messages errors, if any, or an empty array if there are no errors and our object is valid.
-```
+```js
 var validate = new Valerie(schema);
 ```
 
