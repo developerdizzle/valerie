@@ -8,7 +8,7 @@ The goal of this project is to provide a simple, intuitive, extensible, independ
 
 Object that we want to validate
 ```js
-var input = {
+const input = {
     id: 10,
     name: {
         first: 'foo'
@@ -20,24 +20,24 @@ var input = {
 
 Export the class
 ```js
-var Valerie = require('valerie');
+import Valerie from 'valerie';
 ```
 
 Assign some simple validators (or create your own).
 ```js
-var rules = require('valerie/rules');
+import rules from 'valerie/rules';
 
-var required = rules.Required();
-var number = rules.Number();
-var validAge = rules.Range(1, 100);
-var validColor = rules.OneOf(['blue', 'black', 'green', 'orange', 'red', 'yellow', 'green'], 'invalid color');   //last parameter is a custom message!
+const required = rules.required();
+const number = rules.number();
+const validAge = rules.range(1, 100);
+const validColor = rules.oneOf(['blue', 'red', 'yellow'], 'invalid color');   //last parameter is a custom message!
 ```
 These are functions that take a single value parameter, to validate, and return undefined (valid) or a string error message (invalid)
 
 
 Compose the validation schema for our object
 ```js
-var schema = {
+const schema = {
     id: [required, number],
     name: {
         first: required,
@@ -50,12 +50,13 @@ var schema = {
 
 Create the object validator, which is a function taking a single object parameter, and returns an array containing the property paths and error messages errors, if any, or an empty array if there are no errors and our object is valid.
 ```js
-var validate = new Valerie(schema);
+const validate = new Valerie(schema);
 ```
 
 Validate
 ```js
-validate(input).then(errors) {
+validate(input).then(errors => {
+    // tell users about the errors!
     console.log(errors);
 });
 
@@ -74,8 +75,8 @@ validate(input).then(errors) {
 
 // or just get the first error
 
-validate(input, true).then(firstError) {
-    console.log(firstError);
+validate(input, true).then(errors => {
+    console.log(errors[0]);
 });
 
 /*
