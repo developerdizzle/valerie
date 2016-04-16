@@ -1,4 +1,8 @@
-const Valerie = require('../src/index');
+"use strict";
+
+jest.unmock('../src');
+
+import Valerie from '../src';
 
 // simple control Valerie used for testing
 const eq = (target, message) => {

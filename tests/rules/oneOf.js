@@ -1,4 +1,6 @@
-const oneOf = require('../../src/rules/oneOf');
+jest.unmock('../../src/rules/oneOf');
+
+import oneOf from '../../src/rules/oneOf';
 
 describe('oneOf validator', () => {
     it('passes if value is one of the valid options', () => {

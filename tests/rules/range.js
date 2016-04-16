@@ -1,4 +1,6 @@
-const range = require('../../src/rules/range');
+jest.unmock('../../src/rules/range');
+
+import range from '../../src/rules/range';
 
 describe('range validator', () => {
     it('passes if value is in range', () => {

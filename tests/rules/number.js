@@ -1,4 +1,6 @@
-const number = require('../../src/rules/number');
+jest.unmock('../../src/rules/number');
+
+import number from '../../src/rules/number';
 
 describe('number validator', () => {
     it('passes if value is a number', () => {

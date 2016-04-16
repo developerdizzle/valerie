@@ -1,4 +1,6 @@
-const required = require('../../src/rules/required');
+jest.unmock('../../src/rules/required');
+
+import required from '../../src/rules/required';
 
 describe('required validator', () => {
     it('passes if property has a value', () => {
