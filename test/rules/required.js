@@ -1,42 +1,42 @@
-var Required = require('../../src/rules/required');
+const required = require('../../src/rules/required');
 
-describe('required validator', function() {
-    it('passes if property has a value', function() {
-        var rule = new Required();
+describe('required validator', () => {
+    it('passes if property has a value', () => {
+        const rule = required();
         
-        var error = rule('foo');
+        const error = rule('foo');
         
         expect(error).toBeUndefined();
     });
     
-    it('finds undefined values', function() {
-        var rule = new Required();
+    it('finds undefined values', () => {
+        const rule = required();
         
-        var error = rule(undefined);
+        const error = rule(undefined);
         
         expect(error).toEqual('required');
     });
 
-    it('finds empty strings', function() {
-        var rule = new Required();
+    it('finds empty strings', () => {
+        const rule = required();
         
-        var error = rule('');
+        const error = rule('');
         
         expect(error).toEqual('required');        
     });
 
-    it('finds empty arrays', function() {
-        var rule = new Required();
+    it('finds empty arrays', () => {
+        const rule = required();
         
-        var error = rule([]);
+        const error = rule([]);
         
         expect(error).toEqual('required'); 
     });
 
-    it('can contain a custom message', function() {
-        var rule = new Required('name is required');
+    it('can contain a custom message', () => {
+        const rule = required('name is required');
         
-        var error = rule(undefined);
+        const error = rule(undefined);
         
         expect(error).toEqual('name is required');
     });

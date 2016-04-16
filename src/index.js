@@ -1,113 +1,118 @@
-function Validator(validation) {
-    return function(data, stopOnFail) {
-        return Validator.validate("", data, validation, stopOnFail);
-    };
-}
+"use strict";
 
-Validator.validate = function(path, data, validation, stopOnFail) {
-    if (Object.keys(validation).length === 0) return Promise.resolve();
-    
-    if (stopOnFail) return Validator.validateFirst(path, data, validation);
-    
-    var promises = Validator.validateAll(path, data, validation);
-    
-    return Promise.all(promises).then(function(errors) {
-        return errors.filter(function(error) {
-           return error;
-        });
-    });
-};
-
-Validator.validateAll = function validateAll(path, data, validation) {
-    var promises = [];
-    
-    // do this so that we can still validate subobjects
-    if (typeof data === 'undefined') data = {};
-    
-    for (var property in validation) {
-        var value = data[property];
-        var rules = validation[property];
-        
-        var propertyPath = (path ? path + "." : "") + property;
-
-        // sub objects
-        if (typeof rules === 'object' && !Array.isArray(rules)) {
-            var subpromises = Validator.validateAll(propertyPath, value, rules);
-            
-            if (subpromises.length) {
-                promises = promises.concat(subpromises);
-            }
-        }
-        
-        // single validation rule - just convert it to an array and process it below
-        if (typeof rules === 'function') rules = [rules];
-
-        // process actual validation rules
-        if (Array.isArray(rules)) {
-            for (var i = 0; i < rules.length; i++) {
-                var promise = Promise.resolve(rules[i](value)).then(function(message) {
-                    if (message) return {
-                        property: propertyPath,
-                        message: message
-                    };
-                });
-
-                promises.push(promise);
-            }
-        }
+class Valerie {
+    constructor(schema) {
+        return function(data, stopOnFail) {
+            return Valerie.validate("", data, schema, stopOnFail);
+        };
     }
     
-    return promises;
-};
-
-Validator.validateFirst = function validateFirst(path, data, validation) {
-    var properties = Object.keys(validation);
-    var p = 0;
+    static validate(path, data, schema, stopOnFail) {
+        if (Object.keys(schema).length === 0) return Promise.resolve();
+        
+        if (stopOnFail) return Valerie.validateFirst(path, data, schema);
+        
+        const promises = Valerie.validateAll(path, data, schema);
+        
+        // TODO: collapse this shizzle
+        return Promise.all(promises).then(errors => {
+            return errors.filter(error => {
+               return error;
+            });
+        });
+    }
     
-    var processProperty = function(property) {
-        if (typeof property === 'undefined') return;
+    static validateAll(path, data, schema) {
+        let promises = [];
         
-        var rules = validation[property];
+        // do this so that we can still validate subobjects
+        if (typeof data === 'undefined') data = {};
         
-        // subobjects
-        var value = data[property];
-
-        var propertyPath = (path ? path + "." : "") + property;
-
-        if (typeof rules === 'object' && !Array.isArray(rules)) {
-            return Validator.validateFirst(propertyPath, value || { }, rules);
+        for (const property in schema) {
+            const value = data[property];
+            let rules = schema[property];
+            
+            const propertyPath = (path ? path + "." : "") + property;
+    
+            // sub objects
+            if (typeof rules === 'object' && !Array.isArray(rules)) {
+                const subpromises = Valerie.validateAll(propertyPath, value, rules);
+                
+                if (subpromises.length) {
+                    promises = promises.concat(subpromises);
+                }
+            }
+            
+            // single validation rule - just convert it to an array and process it below
+            if (typeof rules === 'function') rules = [rules];
+    
+            // process actual validation rules
+            if (Array.isArray(rules)) {
+                for (const rule of rules) {
+                    const promise = Promise.resolve(rule(value)).then(message => {
+                        if (message) return {
+                            property: propertyPath,
+                            message: message
+                        };
+                    });
+    
+                    promises.push(promise);
+                }
+            }
         }
         
-        if (typeof rules === 'undefined') return;
-        if (Array.isArray(rules) && rules.length === 0) return;
+        return promises;
+    }
+    
+    static validateFirst(path, data, schema) {
+        const properties = Object.keys(schema);
+        let p = 0;
         
-        var r = 0;
-        
-        if (!Array.isArray(rules)) rules = [rules];
-        
-        var processRule = function(rule) {
-            if (typeof rule === 'undefined') return;
-
-            var result = rule(value);
+        const processProperty = property => {
+            if (typeof property === 'undefined') return;
             
-            return Promise.resolve(result).then(function(message) {
-                if (message) return message;
+            let rules = schema[property];
+            
+            // subobjects
+            const value = data[property];
+    
+            const propertyPath = (path ? path + "." : "") + property;
+    
+            if (typeof rules === 'object' && !Array.isArray(rules)) {
+                return Valerie.validateFirst(propertyPath, value || { }, rules);
+            }
+            
+            if (typeof rules === 'undefined') return;
+            if (Array.isArray(rules) && rules.length === 0) return;
+            
+            let r = 0;
+            
+            if (!Array.isArray(rules)) rules = [rules];
+            
+            const processRule = function(rule) {
+                if (typeof rule === 'undefined') return;
+    
+                const result = rule(value);
                 
-                return processRule(rules[++r]);
+                return Promise.resolve(result).then(message => {
+                    if (message) return message;
+                    
+                    return processRule(rules[++r]);
+                });
+            };
+            
+            return processRule(rules[0]).then(message => {
+                if (message) return [{
+                    property: propertyPath,
+                    message: message
+                }];
+    
+                return processProperty(properties[++p]);
             });
         };
         
-        return processRule(rules[0]).then(function(message) {
-            if (message) return [{
-                property: propertyPath,
-                message: message
-            }];
+        return processProperty(properties[0]);
+    }
+}
 
-            return processProperty(properties[++p]);
-        });
-    };
-    
-    return processProperty(properties[0]);
-};
-
-module.exports = Validator;
+module.exports = Valerie;

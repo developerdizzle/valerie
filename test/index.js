@@ -1,56 +1,56 @@
-var Validator = require('../src/index');
+const Valerie = require('../src/index');
 
-// simple control validator used for testing
-var eq = function eq(target, message) {
+// simple control Valerie used for testing
+const eq = (target, message) => {
     message = message || 'eq';
     
-    return function(value) {
+    return value => {
         if (value !== target) return message;
     };
 };
 
-var truth = eq(true, 'truth');
+const truth = eq(true, 'truth');
 
 // tests
-describe('object validator', function() {
-    it('resolves undefined if there is no validation schema', function(done) {
-        var v = new Validator({ });
+describe('object validator', () => {
+    it('resolves undefined if there is no validation schema', done => {
+        const v = new Valerie({ });
         
-        var data = { 
+        const data = { 
             foo: true
         };
         
-        v(data).then(function(errors) {
+        v(data).then(errors => {
             expect(errors).toBeUndefined();
     
             done();
         });
     });
 
-    it('resolves empty array if there are no errors', function(done) {
-        var v = new Validator({
+    it('resolves empty array if there are no errors', done => {
+        const v = new Valerie({
             foo: truth
         });
         
-        var data = { 
+        const data = { 
             foo: true
         };
         
-        v(data).then(function(errors) {
+        v(data).then(errors => {
             expect(errors.length).toBe(0);
     
             done();
         });
     });
 
-    it('resolves with array of errors if there are any', function(done) {
-        var v = new Validator({
+    it('resolves with array of errors if there are any', done => {
+        const v = new Valerie({
             foo: truth
         });
         
-        var data = { };
+        const data = { };
         
-        v(data).then(function(errors) {
+        v(data).then(errors => {
             expect(errors.length).toBe(1);
             expect(errors[0]).toEqual({
                 property: 'foo',
@@ -61,15 +61,15 @@ describe('object validator', function() {
         });
     });
 
-    it('resolves a max of one error if stopOnFail is true', function(done) {
-        var v = new Validator({
+    it('resolves a max of one error if stopOnFail is true', done => {
+        const v = new Valerie({
             foo: truth,
             bar: truth
         });
         
-        var data = { };
+        const data = { };
         
-        v(data, true).then(function(errors) {
+        v(data, true).then(errors => {
             expect(errors.length).toBe(1);
             expect(errors[0]).toEqual({
                 property: 'foo',
@@ -80,16 +80,16 @@ describe('object validator', function() {
         });
     });
     
-    it('validates subobjects', function(done) {
-        var v = new Validator({
+    it('validates subobjects', done => {
+        const v = new Valerie({
             foo: {
                 bar: truth,
             }
         });
         
-        var data = { };
+        const data = { };
         
-        v(data).then(function(errors) {
+        v(data).then(errors => {
             expect(errors.length).toBe(1);
             expect(errors[0]).toEqual({
                 property: 'foo.bar',
@@ -100,16 +100,16 @@ describe('object validator', function() {
         });
     });
     
-    it('validates subobjects when stopOnFail is true', function(done) {
-        var v = new Validator({
+    it('validates subobjects when stopOnFail is true', done => {
+        const v = new Valerie({
             foo: {
                 bar: truth,
             }
         });
         
-        var data = { };
+        const data = { };
         
-        v(data, true).then(function(errors) {
+        v(data, true).then(errors => {
             expect(errors.length).toBe(1);
             expect(errors[0]).toEqual({
                 property: 'foo.bar',

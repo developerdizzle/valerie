@@ -1,11 +1,11 @@
-module.exports = function range(lower, upper, message) {
+const range = (lower, upper, message) => {
     message = message || 'range';
     
-    var rule = function(value) {
+    return value => {
         if (typeof value === 'undefined') return;
         
         if (value < lower || value > upper) return message;
     };
-    
-    return rule;
 };
+
+module.exports = range;

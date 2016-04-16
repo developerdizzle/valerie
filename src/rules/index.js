@@ -1,6 +1,6 @@
 module.exports = {
-    Required: require('./required'),
-    Number: require('./number'),
-    Range: require('./range'),
-    OneOf: require('./oneOf')
+    required: require('./required'),
+    number: require('./number'),
+    range: require('./range'),
+    oneOf: require('./oneOf')
 };

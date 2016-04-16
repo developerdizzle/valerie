@@ -1,11 +1,11 @@
-module.exports = function number(message) {
+const number = message => {
     message = message || 'number';
     
-    var rule = function(value) {
+    return value => {
         if (typeof value === 'undefined') return;
 
         if (isNaN(value)) return message;
     };
-    
-    return rule;
 };
+
+module.exports = number;

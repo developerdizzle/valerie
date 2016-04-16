@@ -1,11 +1,11 @@
-module.exports = function oneOf(options, message) {
+const oneOf = (options, message) => {
     message = message || 'oneOf';
     
-    var rule = function(value) {
+    return value => {
         if (typeof value === 'undefined') return;
 
         if (options.indexOf(value) === -1) return message;
     };
-    
-    return rule;
 };
+
+module.exports = oneOf;

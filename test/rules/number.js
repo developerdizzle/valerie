@@ -1,34 +1,34 @@
-var Number = require('../../src/rules/number');
+const number = require('../../src/rules/number');
 
-describe('number validator', function() {
-    it('passes if value is a number', function() {
-        var rule = new Number();
+describe('number validator', () => {
+    it('passes if value is a number', () => {
+        const rule = number();
         
-        var error = rule(5);
+        const error = rule(5);
         
         expect(error).toBeUndefined();
     });
 
-    it('passes if value is undefined', function() {
-        var rule = new Number();
+    it('passes if value is undefined', () => {
+        const rule = number();
         
-        var error = rule(undefined);
+        const error = rule(undefined);
         
         expect(error).toBeUndefined();
     });
     
-    it('finds an invalid number property', function() {
-        var rule = new Number();
+    it('finds an invalid number property', () => {
+        const rule = number();
         
-        var error = rule('foo');
+        const error = rule('foo');
         
         expect(error).toEqual('number');
     });
     
-    it('can contain a custom message', function() {
-        var rule = new Number('value must be a number');
+    it('can contain a custom message', () => {
+        const rule = number('value must be a number');
         
-        var error = rule('foo');
+        const error = rule('foo');
         
         expect(error).toEqual('value must be a number');
     });

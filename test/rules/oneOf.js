@@ -1,34 +1,34 @@
-var OneOf = require('../../src/rules/oneOf');
+const oneOf = require('../../src/rules/oneOf');
 
-describe('oneOf validator', function() {
-    it('passes if value is one of the valid options', function() {
-        var rule = OneOf(['red', 'blue', 'yellow']);
+describe('oneOf validator', () => {
+    it('passes if value is one of the valid options', () => {
+        const rule = oneOf(['red', 'blue', 'yellow']);
         
-        var error = rule('blue');
+        const error = rule('blue');
         
         expect(error).toBeUndefined();
     });
 
-    it('passes if value is undefined', function() {
-        var rule = OneOf(['red', 'blue', 'yellow']);
+    it('passes if value is undefined', () => {
+        const rule = oneOf(['red', 'blue', 'yellow']);
         
-        var error = rule(undefined);
+        const error = rule(undefined);
         
         expect(error).toBeUndefined();
     });
     
-    it('finds an out-of-array value', function() {
-        var rule = OneOf(['red', 'blue', 'yellow']);
+    it('finds an out-of-array value', () => {
+        const rule = oneOf(['red', 'blue', 'yellow']);
         
-        var error = rule('orange');
+        const error = rule('orange');
         
         expect(error).toEqual('oneOf');
     });
 
-    it('can contain a custom message', function() {
-        var rule = OneOf(['red', 'blue', 'yellow'], 'must be a primary color');
+    it('can contain a custom message', () => {
+        const rule = oneOf(['red', 'blue', 'yellow'], 'must be a primary color');
         
-        var error = rule('orange');
+        const error = rule('orange');
         
         expect(error).toEqual('must be a primary color');
     });
