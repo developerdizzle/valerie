@@ -1,5 +1,3 @@
-jest.unmock('../../src/rules/oneOf');
-
 import oneOf from '../../src/rules/oneOf';
 
 describe('oneOf validator', () => {

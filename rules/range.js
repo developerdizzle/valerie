@@ -1,5 +1,3 @@
-jest.unmock('../../src/rules/range');
-
 import range from '../../src/rules/range';
 
 describe('range validator', () => {

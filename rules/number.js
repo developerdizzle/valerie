@@ -1,5 +1,3 @@
-jest.unmock('../../src/rules/number');
-
 import number from '../../src/rules/number';
 
 describe('number validator', () => {

@@ -1,5 +1,3 @@
-jest.unmock('../../src/rules/required');
-
 import required from '../../src/rules/required';
 
 describe('required validator', () => {

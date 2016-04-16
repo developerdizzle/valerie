@@ -1,5 +1,3 @@
-"use strict";
-
 class Valerie {
     constructor(schema) {
         return function(data, stopOnFail) {

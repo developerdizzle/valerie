@@ -1,7 +1,5 @@
 "use strict";
 
-jest.unmock('../src');
-
 import Valerie from '../src';
 
 // simple control Valerie used for testing
@@ -17,21 +15,19 @@ const truth = eq(true, 'truth');
 
 // tests
 describe('object validator', () => {
-    it('resolves undefined if there is no validation schema', done => {
+    pit('resolves undefined if there is no validation schema', async () => {
         const v = new Valerie({ });
         
         const data = { 
             foo: true
         };
         
-        v(data).then(errors => {
-            expect(errors).toBeUndefined();
-    
-            done();
-        });
+        const errors = await v(data);
+        
+        expect(errors).toBeUndefined();
     });
 
-    it('resolves empty array if there are no errors', done => {
+    pit('resolves empty array if there are no errors', async () => {
         const v = new Valerie({
             foo: truth
         });
@@ -40,32 +36,28 @@ describe('object validator', () => {
             foo: true
         };
         
-        v(data).then(errors => {
-            expect(errors.length).toBe(0);
-    
-            done();
-        });
+        const errors = await v(data);
+        
+        expect(errors.length).toBe(0);
     });
 
-    it('resolves with array of errors if there are any', done => {
+    pit('resolves with array of errors if there are any', async () => {
         const v = new Valerie({
             foo: truth
         });
         
         const data = { };
         
-        v(data).then(errors => {
-            expect(errors.length).toBe(1);
-            expect(errors[0]).toEqual({
-                property: 'foo',
-                message: 'truth'
-            });
-    
-            done();
+        const errors = await v(data);
+        
+        expect(errors.length).toBe(1);
+        expect(errors[0]).toEqual({
+            property: 'foo',
+            message: 'truth'
         });
     });
 
-    it('resolves a max of one error if stopOnFail is true', done => {
+    pit('resolves a max of one error if stopOnFail is true', async () => {
         const v = new Valerie({
             foo: truth,
             bar: truth
@@ -73,18 +65,16 @@ describe('object validator', () => {
         
         const data = { };
         
-        v(data, true).then(errors => {
-            expect(errors.length).toBe(1);
-            expect(errors[0]).toEqual({
-                property: 'foo',
-                message: 'truth'
-            });
-            
-            done();
+        const errors = await v(data, true);
+        
+        expect(errors.length).toBe(1);
+        expect(errors[0]).toEqual({
+            property: 'foo',
+            message: 'truth'
         });
     });
     
-    it('validates subobjects', done => {
+    pit('validates subobjects', async () => {
         const v = new Valerie({
             foo: {
                 bar: truth,
@@ -93,18 +83,16 @@ describe('object validator', () => {
         
         const data = { };
         
-        v(data).then(errors => {
-            expect(errors.length).toBe(1);
-            expect(errors[0]).toEqual({
-                property: 'foo.bar',
-                message: 'truth'
-            });
-            
-            done();
+        const errors = await v(data);
+        
+        expect(errors.length).toBe(1);
+        expect(errors[0]).toEqual({
+            property: 'foo.bar',
+            message: 'truth'
         });
     });
     
-    it('validates subobjects when stopOnFail is true', done => {
+    pit('validates subobjects when stopOnFail is true', async () => {
         const v = new Valerie({
             foo: {
                 bar: truth,
@@ -113,14 +101,12 @@ describe('object validator', () => {
         
         const data = { };
         
-        v(data, true).then(errors => {
-            expect(errors.length).toBe(1);
-            expect(errors[0]).toEqual({
-                property: 'foo.bar',
-                message: 'truth'
-            });
-            
-            done();
+        const errors = await v(data, true);
+        
+        expect(errors.length).toBe(1);
+        expect(errors[0]).toEqual({
+            property: 'foo.bar',
+            message: 'truth'
         });
     });    
 });
