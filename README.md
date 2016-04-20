@@ -18,9 +18,9 @@ const input = {
 }
 ```
 
-Export the class
+Export the function
 ```js
-import Valerie from 'valerie';
+import createValidator from 'valerie';
 ```
 
 Assign some simple validators (or create your own).
@@ -50,7 +50,7 @@ const schema = {
 
 Create the object validator, which is a function taking a single object parameter, and returns an array containing the property paths and error messages errors, if any, or an empty array if there are no errors and our object is valid.
 ```js
-const validate = new Valerie(schema);
+const validate = createValidator(schema);
 ```
 
 Validate
@@ -88,6 +88,12 @@ validate(input, true).then(errors => {
 ]
 */
 
+```
+
+You can also use `async/await` if you like:
+
+```js
+const errors = await validate(input);
 ```
 
 ## TODO:

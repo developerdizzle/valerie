@@ -1,8 +1,8 @@
 "use strict";
 
-import Valerie from '../src';
+import createValidator from '../src';
 
-// simple control Valerie used for testing
+// simple control validator used for testing
 const eq = (target, message) => {
     message = message || 'eq';
     
@@ -16,7 +16,7 @@ const truth = eq(true, 'truth');
 // tests
 describe('object validator', () => {
     pit('resolves undefined if there is no validation schema', async () => {
-        const v = new Valerie({ });
+        const v = createValidator({ });
         
         const data = { 
             foo: true
@@ -28,7 +28,7 @@ describe('object validator', () => {
     });
 
     pit('resolves empty array if there are no errors', async () => {
-        const v = new Valerie({
+        const v = createValidator({
             foo: truth
         });
         
@@ -42,7 +42,7 @@ describe('object validator', () => {
     });
 
     pit('resolves with array of errors if there are any', async () => {
-        const v = new Valerie({
+        const v = createValidator({
             foo: truth
         });
         
@@ -58,7 +58,7 @@ describe('object validator', () => {
     });
 
     pit('resolves a max of one error if stopOnFail is true', async () => {
-        const v = new Valerie({
+        const v = createValidator({
             foo: truth,
             bar: truth
         });
@@ -75,7 +75,7 @@ describe('object validator', () => {
     });
     
     pit('validates subobjects', async () => {
-        const v = new Valerie({
+        const v = createValidator({
             foo: {
                 bar: truth,
             }
@@ -93,7 +93,7 @@ describe('object validator', () => {
     });
     
     pit('validates subobjects when stopOnFail is true', async () => {
-        const v = new Valerie({
+        const v = createValidator({
             foo: {
                 bar: truth,
             }
