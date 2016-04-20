@@ -1,6 +1,6 @@
 {
   "name": "valerie",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Simple JS object validator",
   "main": "src/index.js",
   "scripts": {
@@ -14,14 +14,15 @@
     "javascript",
     "validation",
     "json",
-    "object"
+    "object",
+    "schema"
   ],
   "author": "developerdizzle",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/developerdizzle/validator/issues"
+    "url": "https://github.com/developerdizzle/valerie/issues"
   },
-  "homepage": "https://github.com/developerdizzle/validator",
+  "homepage": "https://github.com/developerdizzle/valerie",
   "devDependencies": {
     "babel-jest": "^11.0.1",
     "babel-polyfill": "^6.7.4",
@@ -34,7 +35,7 @@
     "verbose": true,
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/\\.c9/"
+      "/\\..*/"
     ],
     "unmockedModulePathPatterns": [
       "src"
