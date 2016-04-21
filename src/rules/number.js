@@ -1,6 +1,4 @@
-const number = message => {
-    message = message || 'number';
-    
+const number = (message = 'number') => {
     return value => {
         if (typeof value === 'undefined') return;
 
@@ -8,4 +6,4 @@ const number = message => {
     };
 };
 
-module.exports = number;
+export default number;

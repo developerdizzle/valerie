@@ -1,6 +1,4 @@
-const range = (lower, upper, message) => {
-    message = message || 'range';
-    
+const range = (lower, upper, message = 'range') => {
     return value => {
         if (typeof value === 'undefined') return;
         
@@ -8,4 +6,4 @@ const range = (lower, upper, message) => {
     };
 };
 
-module.exports = range;
+export default range;

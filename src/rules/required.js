@@ -1,7 +1,4 @@
-// const Required = (message = 'required') => {
-const required = (message) => {
-    message = message || 'required';
-    
+const required = (message = 'required') => {
     return value => {
         if (typeof value === 'undefined') return message;
         
@@ -11,4 +8,4 @@ const required = (message) => {
     };
 };
 
-module.exports = required;
+export default required;

@@ -1,114 +1,53 @@
-function validate(path, data, schema, stopOnFail) {
-    if (Object.keys(schema).length === 0) return Promise.resolve();
-    
-    if (stopOnFail) return validateFirst(path, data, schema);
-    
-    const promises = validateAll(path, data, schema);
-    
-    // TODO: collapse this shizzle
-    return Promise.all(promises).then(errors => {
-        return errors.filter(error => {
-           return error;
-        });
-    });
-}
+const validate = async (data, schema, maximum) => {
+    if (Object.keys(schema).length === 0) return [];
+    if (maximum === 0) return [];
 
-function validateAll(path, data, schema) {
-    let promises = [];
+    return validateCount("", data, schema, maximum);
+};
+
+const validateCount = async (path, data = {}, schema, maximum) => {
+    let errors = [];
     
-    // do this so that we can still validate subobjects
-    if (typeof data === 'undefined') data = {};
-    
-    for (const property in schema) {
-        const value = data[property];
-        let rules = schema[property];
+    for (const key in schema) {
+        const value = data[key];
+        let rules = schema[key];
         
-        const propertyPath = (path ? path + "." : "") + property;
+        const subPath = (path ? path + "." : "") + key;
 
         // sub objects
         if (typeof rules === 'object' && !Array.isArray(rules)) {
-            const subpromises = validateAll(propertyPath, value, rules);
+            const subErrors = await validateCount(subPath, value, rules, maximum);
             
-            if (subpromises.length) {
-                promises = promises.concat(subpromises);
+            if (subErrors.length) {
+                errors = errors.concat(subErrors);
+                
+                if (errors.length >= maximum) return errors;
             }
+            
+            continue;
         }
         
         // single validation rule - just convert it to an array and process it below
         if (typeof rules === 'function') rules = [rules];
 
-        // process actual validation rules
-        if (Array.isArray(rules)) {
-            for (const rule of rules) {
-                const promise = Promise.resolve(rule(value)).then(message => {
-                    if (message) return {
-                        property: propertyPath,
-                        message: message
-                    };
-                });
+        if (!Array.isArray(rules)) return errors;
 
-                promises.push(promise);
-            }
+        // process actual validation rules
+        for (const rule of rules) {
+            const message = await Promise.resolve(rule(value));
+
+            if (message) errors.push({
+                property: subPath,
+                message
+            });
+            
+            if (errors.length >= maximum) return errors;
         }
     }
     
-    return promises;
-}
+    return errors;
+};
 
-function validateFirst(path, data, schema) {
-    const properties = Object.keys(schema);
-    let p = 0;
-    
-    const processProperty = property => {
-        if (typeof property === 'undefined') return;
-        
-        let rules = schema[property];
-        
-        // subobjects
-        const value = data[property];
+const createValidator = (schema = {}) => async (data = {}, maximum = Infinity) => validate(data, schema, maximum);
 
-        const propertyPath = (path ? path + "." : "") + property;
-
-        if (typeof rules === 'object' && !Array.isArray(rules)) {
-            return validateFirst(propertyPath, value || { }, rules);
-        }
-        
-        if (typeof rules === 'undefined') return;
-        if (Array.isArray(rules) && rules.length === 0) return;
-        
-        let r = 0;
-        
-        if (!Array.isArray(rules)) rules = [rules];
-        
-        const processRule = function(rule) {
-            if (typeof rule === 'undefined') return;
-
-            const result = rule(value);
-            
-            return Promise.resolve(result).then(message => {
-                if (message) return message;
-                
-                return processRule(rules[++r]);
-            });
-        };
-        
-        return processRule(rules[0]).then(message => {
-            if (message) return [{
-                property: propertyPath,
-                message: message
-            }];
-
-            return processProperty(properties[++p]);
-        });
-    };
-    
-    return processProperty(properties[0]);
-}
-
-function createValidator(schema) {
-    return function(data, stopOnFail) {
-        return validate("", data, schema, stopOnFail);
-    };
-}
-
-module.exports = createValidator;
+export default createValidator;

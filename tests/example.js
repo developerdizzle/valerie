@@ -1,25 +1,20 @@
-import Valerie from '../src';
-import rules from '../src/rules';
-
-const required = rules.required();
-const number = rules.number();
-const validAge = rules.range(1, 100);
-const validColor = rules.oneOf(['blue', 'red', 'yellow'], 'invalid color');
+import createValidator from '../src';
+import { required, number, range, oneOf } from '../src/rules';
 
 const schema = {
-    id: [required, number],
+    id: [required(), number()],
     name: {
-        first: required,
-        last: required
+        first: required(),
+        last: required()
     },
-    age: validAge,
-    favoriteColor: validColor
+    age: range(1, 100),
+    favoriteColor: oneOf(['blue', 'red', 'yellow'], 'invalid color')
 };
 
 // tests
 describe('example validator', () => {
     pit('finds expected errors', async () => {
-        const v = new Valerie(schema);
+        const v = createValidator(schema);
         
         const data = {
             id: 10,
@@ -45,7 +40,7 @@ describe('example validator', () => {
     });
     
     pit('finds expected first error', async () => {
-        const v = new Valerie(schema);
+        const v = createValidator(schema);
         
         const data = {
             id: 10,
@@ -56,7 +51,7 @@ describe('example validator', () => {
             favoriteColor: 'potato'
         };
         
-        const errors = await v(data, true);
+        const errors = await v(data, 1);
         
         expect(errors).toEqual([
             {
@@ -64,5 +59,5 @@ describe('example validator', () => {
                 message: 'required'
             }
         ]);
-    });    
+    });
 });

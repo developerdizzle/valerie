@@ -1,6 +1,4 @@
-const oneOf = (options, message) => {
-    message = message || 'oneOf';
-    
+const oneOf = (options, message = 'oneOf') => {
     return value => {
         if (typeof value === 'undefined') return;
 
@@ -8,4 +6,4 @@ const oneOf = (options, message) => {
     };
 };
 
-module.exports = oneOf;
+export default oneOf;
