@@ -76,7 +76,7 @@ validate(input).then(errors => {
 // or just get the first error
 
 validate(input, 1).then(errors => {
-    console.log(errors[0]);
+    console.log(errors);
 });
 
 /*

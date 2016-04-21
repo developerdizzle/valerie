@@ -126,7 +126,7 @@ describe('object validator', () => {
         });
     });
     
-    pit('does not trigger rules after finding the maximum amount of errors', async () => {
+    pit('does not trigger additional rules after finding the maximum amount of errors', async () => {
         const v = createValidator({
             foo: {
                 bar: truthPromise,
