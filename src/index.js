@@ -5,18 +5,43 @@ const validate = async (data, schema, maximum) => {
     return validateCount("", data, schema, maximum);
 };
 
-const validateCount = async (path, data = {}, schema, maximum) => {
+const validateCount = async (parentPath, data = {}, schemata, maximum) => {
     let errors = [];
     
-    for (const key in schema) {
+    // filter out array indices
+    const keys = Object.keys(schemata).filter(isNaN);
+    
+    for (const key of keys) {
         const value = data[key];
-        let rules = schema[key];
+        const schema = schemata[key];
         
-        const subPath = (path ? path + "." : "") + key;
-
-        // sub objects
-        if (typeof rules === 'object' && !Array.isArray(rules)) {
-            const subErrors = await validateCount(subPath, value, rules, maximum);
+        const path = (parentPath ? parentPath + "." : "") + key;
+        
+        // direct rules
+        let rules = [];
+        if (typeof schema === 'function') rules = [ schema ];
+        if (Array.isArray(schema)) rules = schema;
+        
+        // console.log(path, ' has ', rules.length, ' rules');
+        
+        for (const rule of rules) {
+            const message = await Promise.resolve(rule(value));
+ 
+            if (message) errors.push({
+                property: path,
+                message
+            });
+            
+            if (errors.length >= maximum) return errors;
+        }
+        
+        // sub schema
+        const schemaKeys = Object.keys(schema).filter(isNaN);
+        
+        // console.log(path, ' has ', schemaKeys.length, ' keys');
+        
+        if (schemaKeys.length) {
+            const subErrors = await validateCount(path, value, schema, maximum);
             
             if (subErrors.length) {
                 errors = errors.concat(subErrors);
@@ -25,23 +50,6 @@ const validateCount = async (path, data = {}, schema, maximum) => {
             }
             
             continue;
-        }
-        
-        // single validation rule - just convert it to an array and process it below
-        if (typeof rules === 'function') rules = [rules];
-
-        if (!Array.isArray(rules)) return errors;
-
-        // process actual validation rules
-        for (const rule of rules) {
-            const message = await Promise.resolve(rule(value));
-
-            if (message) errors.push({
-                property: subPath,
-                message
-            });
-            
-            if (errors.length >= maximum) return errors;
         }
     }
     

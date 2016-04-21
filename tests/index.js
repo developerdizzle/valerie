@@ -143,5 +143,63 @@ describe('object validator', () => {
             property: 'foo.bar',
             message: 'truth'
         });
-    });    
+    });
+    
+    pit('allows rules to dually function as schema', async() => {
+        const truthAndBaz = Object.assign(eq(true, 'truth'), {
+            baz: truth
+        });
+        
+        const v = createValidator({
+            foo: {
+                bar: truthAndBaz
+            }
+        });
+        
+        const data = { };
+        
+        const errors = await v(data);
+        
+        expect(errors).toEqual([
+        {
+            property: 'foo.bar',
+            message: 'truth'
+        },
+        {
+            property: 'foo.bar.baz',
+            message: 'truth'
+        }]);
+    });
+    
+    pit('allows arrays of rules to dually function as schema', async() => {
+        const truthRules = [ truth, truth ];
+        
+        const truthsAndBaz = Object.assign(truthRules, {
+            baz: truth
+        });
+        
+        const v = createValidator({
+            foo: {
+                bar: truthsAndBaz
+            }
+        });
+        
+        const data = { };
+        
+        const errors = await v(data);
+        
+        expect(errors).toEqual([
+            {
+                property: 'foo.bar',
+                message: 'truth'
+            },
+            {
+                property: 'foo.bar',
+                message: 'truth'
+            },
+            {
+                property: 'foo.bar.baz',
+                message: 'truth'
+            }]);
+    });
 });

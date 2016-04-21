@@ -1,5 +1,5 @@
 import createValidator from '../src';
-import { required, number, range, oneOf } from '../src/rules';
+import { required, number, range, oneOf, regex } from '../src/rules';
 
 const schema = {
     id: [required(), number()],
@@ -8,7 +8,8 @@ const schema = {
         last: required()
     },
     age: range(1, 100),
-    favoriteColor: oneOf(['blue', 'red', 'yellow'], 'invalid color')
+    favoriteColor: oneOf(['blue', 'red', 'yellow'], 'invalid color'),
+    email: regex(/^[^@]+@[^@]+\.[^@]+$/, 'invalid email address')
 };
 
 // tests
@@ -22,7 +23,8 @@ describe('example validator', () => {
                 first: 'foo'
             },
             age: 99,
-            favoriteColor: 'potato'
+            favoriteColor: 'potato',
+            email: 'derp'
         };
         
         const errors = await v(data);
@@ -35,6 +37,10 @@ describe('example validator', () => {
             {
                 property: 'favoriteColor',
                 message: 'invalid color'
+            },
+            {
+                property: 'email',
+                message: 'invalid email address'
             }
         ]);
     });
