@@ -3,7 +3,6 @@ import createValidator from '../lib';
 // simple control validator used for testing
 const eq = (target, message = 'eq') => {
     return value => {
-        console.log('truth');
         if (value !== target) return message;
     };
 };
