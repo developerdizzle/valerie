@@ -1,8 +1,8 @@
-import hasOneOf from '../../src/rules/hasOneOf';
+import hasProperty from '../../src/rules/hasProperty';
 
-describe('hasOneOf validator', () => {
+describe('hasProperty validator', () => {
     it('passes if value has property', () => {
-        const rule = hasOneOf(['bar', 'baz']);
+        const rule = hasProperty('bar');
         
         const error = rule({
             bar: true
@@ -12,7 +12,7 @@ describe('hasOneOf validator', () => {
     });
 
     it('passes if value is undefined', () => {
-        const rule = hasOneOf(['bar', 'baz']);
+        const rule = hasProperty('bar');
         
         const error = rule(undefined);
         
@@ -20,18 +20,18 @@ describe('hasOneOf validator', () => {
     });
     
     it('fails if value does not have property', () => {
-        const rule = hasOneOf(['bar', 'baz']);
+        const rule = hasProperty('bar');
         
         const error = rule({});
         
-        expect(error).toEqual('hasOneOf');
+        expect(error).toEqual('hasProperty');
     });
     
     it('can contain a custom message', () => {
-        const rule = hasOneOf(['bar', 'baz'], 'must contain bar or baz');
+        const rule = hasProperty('bar', 'must contain bar');
         
         const error = rule({});
         
-        expect(error).toEqual('must contain bar or baz');
+        expect(error).toEqual('must contain bar');
     });
 });

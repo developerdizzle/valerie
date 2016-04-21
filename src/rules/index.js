@@ -1,8 +1,9 @@
+import equals from './equals';
 import required from './required';
 import number from './number';
 import range from './range';
 import oneOf from './oneOf';
 import regex from './regex';
-import hasOneOf from './hasOneOf';
+import hasProperty from './hasProperty';
 
-export { required, number, range, oneOf, regex, hasOneOf };
+export { equals, required, number, range, oneOf, regex, hasProperty };

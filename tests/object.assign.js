@@ -1,10 +1,8 @@
 import createValidator from '../src';
-import { required, number, range, oneOf, regex, hasOneOf } from '../src/rules';
-
-const barOrBaz = hasOneOf(['bar', 'baz'], 'barOrBaz');
+import { required, number, range, oneOf, regex, hasProperty } from '../src/rules';
 
 const schema = {
-    foo: Object.assign(barOrBaz, {
+    foo: Object.assign(hasProperty('bar'), {
         bar: number(),
         baz: number(),
         qux: number()
@@ -24,7 +22,7 @@ describe('object.assign validator', () => {
         expect(errors).toEqual([
             {
                 property: 'foo',
-                message: 'barOrBaz'
+                message: 'hasProperty'
             }
         ]);
     });
@@ -58,7 +56,7 @@ describe('object.assign validator', () => {
         expect(errors).toEqual([
             {
                 property: 'foo',
-                message: 'barOrBaz'
+                message: 'hasProperty'
             },
             {
                 property: 'foo.qux',
