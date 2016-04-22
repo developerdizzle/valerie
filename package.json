@@ -4,7 +4,7 @@
   "description": "Simple JS object validator",
   "main": "lib",
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib",
     "test": "jest"
   },
   "repository": {
