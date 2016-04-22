@@ -96,7 +96,7 @@ Example:
 ```js
 import { equals } from 'valerie/rules';
 
-const isTrue = equals(true, 'foo must be true');
+const isTrue = equals(true, 'value must be true');
 
 isTrue(false); // 'value must be true';
 isTrue(true); // undefined
