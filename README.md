@@ -10,7 +10,8 @@ Import the function and built-in rules
 
 ```js
 import createValidator from 'valerie';
-import { required, number, range, oneOf } from 'valerie/rules';
+import { required, number, oneOf } from 'valerie/rules';
+import { range } from 'valerie/rules/advanced';
 ```
 
 Compose the validation schema for our object
@@ -94,9 +95,9 @@ The built-in rule objects exported from `valerie/rules` are functions that take 
 Example:
 
 ```js
-import { equals } from 'valerie/rules';
+import { is } from 'valerie/rules';
 
-const isTrue = equals(true, 'value must be true');
+const isTrue = is(true, 'value must be true');
 
 isTrue(false); // 'value must be true';
 isTrue(true); // undefined
