@@ -1,9 +1,8 @@
-import or from '../../src/rules/or';
-import equals from '../../src/rules/equals';
+import { or, equalTo } from '../../src/rules';
 
 describe('or validator', () => {
     it('passes if one rule is valid', () => {
-        const rule = or([equals('bar'), equals('baz')]);
+        const rule = or([equalTo('bar'), equalTo('baz')]);
         
         const error = rule('bar');
         
@@ -11,7 +10,7 @@ describe('or validator', () => {
     });
 
     it('fails if both rules are not valid', () => {
-        const rule = or([equals('bar'), equals('baz')]);
+        const rule = or([equalTo('bar'), equalTo('baz')]);
         
         const error = rule('foo');
         
@@ -19,7 +18,7 @@ describe('or validator', () => {
     });
     
     it('can contain a custom message', () => {
-        const rule = or([equals('bar'), equals('baz')], 'must equal bar or baz');
+        const rule = or([equalTo('bar'), equalTo('baz')], 'must equal bar or baz');
         
         const error = rule('foo');
         

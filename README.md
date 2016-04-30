@@ -104,19 +104,50 @@ isTrue(true); // undefined
 
 ## Built-in rules
 
-### `equals(target, [message = "equals"])`
+The built-in rules are largely based on the fundamental javascript operations.
 
-Tests if a value is equal (`===`) to a target value.
+### `array([message = "array"])`
+
+Tests if a value is an array.
+
+ - `message`: optional custom error message
+
+```js
+const isArray = array('foo must be an array');
+
+const validate = createValidator({ foo: isArray });
+
+const errors = await validate({ foo: ['bar', 'baz'] });
+```
+
+### `equalTo(target, [message = "equalTo"])`
+
+Tests if a value is loosely equal (`==`) to a target value.
 
  - `target`: what the validated value should equal
  - `message`: optional custom error message
 
 ```js
-const isTrue = equals(true, 'foo must be true');
+const isBar = equalTo('bar', 'foo must be bar');
 
-const validate = createValidator({ foo: isTrue });
+const validate = createValidator({ foo: isBar });
 
-const errors = await validate({ foo: true });
+const errors = await validate({ foo: new String('bar') });
+```
+
+### `greaterThan(target, [message = "greaterThan"])`
+
+Tests if a value is greater than a target value.
+
+ - `target`: what the validated value should be greater than
+ - `message`: optional custom error message
+
+```js
+const isPositive = greaterThan(0, 'foo must be positive');
+
+const validate = createValidator({ foo: isPositive });
+
+const errors = await validate({ foo: 1 });
 ```
 
 ### `hasProperty(property, [message = "hasProperty"])`
@@ -138,9 +169,69 @@ const errors = await validate({
 });
 ```
 
+### `is(target, [message = "is"])`
+
+Tests if a value is strictly equal (`===`) to a target value.
+
+ - `target`: what the validated value should equal
+ - `message`: optional custom error message
+
+```js
+const isBar = equalTo('bar', 'foo must be bar');
+
+const validate = createValidator({ foo: isBar });
+
+const errors = await validate({ foo: 'bar' });
+```
+
+### `isInstanceOf(type, [message = "isInstanceOf"])`
+
+Tests if a value is an instance of a class.
+
+ - `type`: what the validated value should be an instance of
+ - `message`: optional custom error message
+
+```js
+const isBar = isInstanceOf(Bar, 'foo must be bar');
+
+const validate = createValidator({ foo: isBar });
+
+const errors = await validate({ foo: new Bar() });
+```
+
+### `isTypeOf(type, [message = "isTypeOf"])`
+
+Tests if a value is of a given type.
+
+ - `type`: what the validated value should be a type of
+ - `message`: optional custom error message
+
+```js
+const isString = isTypeOf(Bar, 'foo must be a string');
+
+const validate = createValidator({ foo: isString });
+
+const errors = await validate({ foo: 'bar' });
+```
+
+### `lessThan(target, [message = "lessThan"])`
+
+Tests if a value is less than a target value.
+
+ - `target`: what the validated value should be less than
+ - `message`: optional custom error message
+
+```js
+const isNegative = lessThan(0, 'foo must be negative');
+
+const validate = createValidator({ foo: isNegative });
+
+const errors = await validate({ foo: -1 });
+```
+
 ### `number([message = "number"])`
 
-Tests if a value is a number (`isNaN`).
+Tests if a value is a number (`!isNaN`).
 
  - `message`: optional custom error message
 
@@ -182,23 +273,6 @@ const validate = createValidator({ foo: isNumberOrX });
 const errors = await validate({ foo: 'x' );
 ```
 
-### `range(min, max, [message = "range"])`
-
-Tests if a value is between (`< and >`) two values.  Generally want to use with `number`
-
- - `min`: minimum value, exclusive
- - `max`: maximum value, exclusive
- - `message`: optional custom error message
-
-```js
-const isNumber = number('foo must be a number');
-const isPositive = range(0, Infinity, foo 'must be a positive');
-
-const validate = createValidator({ foo: [isNumber, isPositive] });
-
-const errors = await validate({ foo: 100 });
-```
-
 ### `regex(pattern, [message = "regex"])`
 
 Tests if a value matches a regex (`.match`)
@@ -214,7 +288,7 @@ const validate = createValidator({ foo: isEMail });
 const errors = await validate({ foo: 'bar@baz.com' });
 ```
 
-### `required([message = "regex"])`
+### `required([message = "required"])`
 
 Tests if a value exists (not `undefined`, not an empty string, not an empty array)
 
@@ -228,9 +302,37 @@ const validate = createValidator({ foo: isRequired });
 const errors = await validate({ foo: true );
 ```
 
+## Advanced Rules
+
+Advanced rules use the built-in rules to form more complex logic
+
+### `range(min, max, [message = "range"])`
+
+Tests if a value is between (`< and >`) two values.  Generally want to use with `number`.  Depends on `greaterThan`, `lessThan`, `equalTo`, and `or`.
+
+ - `min`: minimum value, inclusive
+ - `max`: maximum value, inclusive
+ - `message`: optional custom error message
+
+```js
+const isNumber = number('foo must be a number');
+const isHumanAge = range(0, 123, 'foo must be a human age');
+
+const validate = createValidator({ foo: [isNumber, isHumanAge] });
+
+const errors = await validate({ foo: 100 });
+```
 
 
 ## TODO:
 
-* Include examples of client- and server-side usage
-* Add more rules
+* Rules
+    * `contains`
+    * `email`
+* Examples of client- and server-side usage
+* Example of promise rule
+* Add custom messages to readme example
+* Compare to other libs
+    * https://github.com/hapijs/joi (large)
+    * https://github.com/molnarg/js-schema (no custom messages)
+    * https://github.com/ansman/validate.js 

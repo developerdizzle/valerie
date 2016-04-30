@@ -38,8 +38,6 @@ const validateCount = async (parentPath, data = {}, schemata, maximum) => {
         // sub schema
         const schemaKeys = Object.keys(schema).filter(isNaN);
         
-        // console.log(path, ' has ', schemaKeys.length, ' keys');
-        
         if (schemaKeys.length) {
             const subErrors = await validateCount(path, value, schema, maximum);
             

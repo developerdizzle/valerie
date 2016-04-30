@@ -3,7 +3,7 @@ const or = (rules, message = 'or') => {
         for (const rule of rules) {
             const error = rule(value);
             
-            if (typeof error === 'undefined') return;
+            if (error === undefined) return;
         }
         
         return message;

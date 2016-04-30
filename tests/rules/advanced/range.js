@@ -1,4 +1,4 @@
-import range from '../../src/rules/range';
+import range from '../../../src/rules/advanced/range';
 
 describe('range validator', () => {
     it('passes if value is in range', () => {
