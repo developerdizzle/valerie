@@ -22,7 +22,7 @@ describe('array validator', () => {
         
         const error = rule('foo');
         
-        expect(error).toEqual('isArray');
+        expect(error).toEqual('array');
     });
     
     it('can contain a custom message', () => {
