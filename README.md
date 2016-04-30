@@ -108,7 +108,7 @@ The built-in rules are largely based on the fundamental javascript operations.
 
 ### `array([message = "array"])`
 
-Tests if a value is an array.
+Tests if a value is an array (`Array.isArray`).
 
  - `message`: optional custom error message
 
@@ -137,7 +137,7 @@ const errors = await validate({ foo: new String('bar') });
 
 ### `greaterThan(target, [message = "greaterThan"])`
 
-Tests if a value is greater than a target value.
+Tests if a value is greater than (`>`) a target value.
 
  - `target`: what the validated value should be greater than
  - `message`: optional custom error message
@@ -152,7 +152,7 @@ const errors = await validate({ foo: 1 });
 
 ### `hasProperty(property, [message = "hasProperty"])`
 
-Tests if an object has a child property (`hasOwnProperty`)
+Tests if an object has a child property (`hasOwnProperty`).
 
  - `property`: name of the property
  - `message`: optional custom error message
@@ -186,7 +186,7 @@ const errors = await validate({ foo: 'bar' });
 
 ### `isInstanceOf(type, [message = "isInstanceOf"])`
 
-Tests if a value is an instance of a class.
+Tests if a value is an instance of a class (`instanceof`).
 
  - `type`: what the validated value should be an instance of
  - `message`: optional custom error message
@@ -201,7 +201,7 @@ const errors = await validate({ foo: new Bar() });
 
 ### `isTypeOf(type, [message = "isTypeOf"])`
 
-Tests if a value is of a given type.
+Tests if a value is of a given type (`typeof`).
 
  - `type`: what the validated value should be a type of
  - `message`: optional custom error message
@@ -216,7 +216,7 @@ const errors = await validate({ foo: 'bar' });
 
 ### `lessThan(target, [message = "lessThan"])`
 
-Tests if a value is less than a target value.
+Tests if a value is less than (`<`) a target value.
 
  - `target`: what the validated value should be less than
  - `message`: optional custom error message
@@ -260,7 +260,7 @@ const errors = await validate({ foo: 'blue' });
 
 ### `or(rules, [message = "or"])`
 
-Tests if a value is is valid against at least one rule within an `Array`
+Tests if a value is is valid against at least one rule within an `Array` of rules.
 
  - `rules`: array of rules to validate against
  - `message`: optional custom error message
@@ -308,7 +308,7 @@ Advanced rules use the built-in rules to form more complex logic
 
 ### `range(min, max, [message = "range"])`
 
-Tests if a value is between (`< and >`) two values.  Generally want to use with `number`.  Depends on `greaterThan`, `lessThan`, `equalTo`, and `or`.
+Tests if a value is between two values.  Generally want to use with `number`.  Depends on `greaterThan`, `lessThan`, `equalTo`, and `or`.
 
  - `min`: minimum value, inclusive
  - `max`: maximum value, inclusive
