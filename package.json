@@ -3,7 +3,7 @@
   "version": "0.7.0",
   "description": "Simple JS object validator",
   "main": "lib",
-  "engines" {
+  "engines": {
     "node": "5.10.1"
   }
   "scripts": {
