@@ -352,7 +352,7 @@ const validate = createValidator({
   foo: isEven
 });
 
-const errors = validate({
+const errors = await validate({
   foo: 5
 });
 
