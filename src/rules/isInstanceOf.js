@@ -1,10 +1,10 @@
 const isInstanceOf = (type, message = 'isInstanceOf') => {
-    return value => {
-        if (typeof value === 'undefined') return;
-        if (value instanceof type) return;
+  return value => {
+    if (typeof value === 'undefined') return;
+    if (value instanceof type) return;
 
-        return message;
-    };
+    return message;
+  };
 };
 
 export default isInstanceOf;

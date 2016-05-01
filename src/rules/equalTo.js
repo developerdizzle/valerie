@@ -1,9 +1,11 @@
 const equalTo = (target, message = 'equalTo') => {
-    return value => {
-        if (value == target) return;
-        
-        return message;
-    };
+  return value => {
+    /* eslint-disable eqeqeq */
+    if (value == target) return;
+    /* eslint-enable eqeqeq */
+
+    return message;
+  };
 };
 
 export default equalTo;
