@@ -1,4 +1,4 @@
-# valerie [![Build Status](https://travis-ci.org/developerdizzle/valerie.svg?branch=master)](https://travis-ci.org/developerdizzle/valerie)
+# valerie [![Build Status](https://travis-ci.org/developerdizzle/valerie.svg?branch=master)](https://travis-ci.org/developerdizzle/valerie) [![devDependency Status](https://david-dm.org/developerdizzle/valerie.svg)](https://david-dm.org/developerdizzle/valerie) [![devDependency Status](https://david-dm.org/developerdizzle/valerie/dev-status.svg)](https://david-dm.org/developerdizzle/valerie#info=devDependencies)
 
 Simple javascript object validator
 
