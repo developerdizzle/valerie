@@ -91,7 +91,7 @@ const errors = await validate(input, 1);
 [
   {
     property: 'name.last',
-    message: 'required'
+    message: 'last name is required'
   }
 ]
 */
