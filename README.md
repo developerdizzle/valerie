@@ -4,16 +4,16 @@ Simple javascript object validator
 
 The goal of this project is to provide a simple, intuitive, extensible, independent, and isomorphic javascript object validation library.
 
-## What makes this any different from other validation libs?
+## What makes Valerie any different from other validation libs?
 
-* Valerie has no dependencies
-* It's very small
+* No dependencies
+* Very lightweight
 * Easy to use both server- and browser-side
-* Validators are standard functions (keep it simple)
+* Validation rules are standard functions (keep it simple)
 * Supports async/promise-based validation rules
-* Custom rules are super easy to make
+* [Custom rules](#custom-rules) are super easy to make
 * Custom error messages for all built-in rules
-* Source uses ES6/7 features
+* Source uses ES6/7 features (transpiled to ES5 for browsers)
 * Full tests and linting
 
 ## Usage
@@ -30,17 +30,17 @@ Compose the validation schema for our object
 
 ```js
 const schema = {
-    id: [required(), number()],
-    name: {
-        first: required(),
-        last: required()
-    },
-    age: range(0, 123),
-    favoriteColor: oneOf(['blue', 'red', 'yellow'], 'invalid color')   //last parameter is a custom message!
+  id: [required('id is required'), number('id must be a number')],
+  name: {
+    first: required('first name is required'),
+    last: required('last name is required')
+  },
+  age: range(0, 123, 'must be a normal human age'),
+  favoriteColor: oneOf(['blue', 'red', 'yellow'], 'must be a primary color')
 };
 ```
 
-Create the object validator, which is a function taking a single object parameter, and returns a Promise which resolves an array containing errors.  The array will be empty if there are no errors.
+Create the object validator, which is a function taking a single object parameter, and returns a `Promise` which resolves to an array containing errors.  The array will be empty if there are no errors.
 
 ```js
 const validate = createValidator(schema);
@@ -50,12 +50,12 @@ Validate
 ```js
 
 const input = {
-    id: 10,
-    name: {
-        first: 'foo'
-    },
-    age: 99,
-    favoriteColor: 'potato'
+  id: 10,
+  name: {
+    first: 'foo'
+  },
+  age: 99,
+  favoriteColor: 'potato'
 };
 
 // ES7
@@ -63,24 +63,24 @@ const errors = await validate(input);
 
 // ES6
 validate(input).then(errors => {
-    // tell the user about the errors!
+  // tell the user about the errors!
 })
 
 // ES5
 validate(input).then(function(errors) {
-    // tell the user about the errors!
+  // tell the user about the errors!
 });
 
 /*
 [
-    {
-        property: 'name.last',
-        message: 'required'
-    },
-    {
-        property: 'favoriteColor',
-        message: 'invalid color'
-    }
+  {
+    property: 'name.last',
+    message: 'required'
+  },
+  {
+    property: 'favoriteColor',
+    message: 'invalid color'
+  }
 ]
 */
 
@@ -89,10 +89,10 @@ const errors = await validate(input, 1);
 
 /*
 [
-    {
-        property: 'name.last',
-        message: 'required'
-    }
+  {
+    property: 'name.last',
+    message: 'required'
+  }
 ]
 */
 
@@ -358,8 +358,10 @@ const errors = validate({
 
 /* 
 [
-  property: 'foo',
-  message: 'value must be even'
+  {
+    property: 'foo',
+    message: 'value must be even'
+  }
 ]
 */
 
