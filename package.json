@@ -1,6 +1,6 @@
 {
   "name": "valerie",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Simple JS object validator",
   "main": "lib",
   "engines": {
