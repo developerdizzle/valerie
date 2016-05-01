@@ -4,6 +4,18 @@ Simple javascript object validator
 
 The goal of this project is to provide a simple, intuitive, extensible, independent, and isomorphic javascript object validation library.
 
+## What makes this any different from other validation libs?
+
+* Valerie has no dependencies
+* It's very small
+* Easy to use both server- and browser-side
+* Validators are standard functions (keep it simple)
+* Supports async/promise-based validation rules
+* Custom rules are super easy to make
+* Custom error messages for all built-in rules
+* Source uses ES6/7 features
+* Full tests and linting
+
 ## Usage
 
 Import the function and built-in rules
@@ -324,6 +336,48 @@ const validate = createValidator({ foo: [isNumber, isHumanAge] });
 const errors = await validate({ foo: 100 });
 ```
 
+## Custom Rules
+
+Custom rules are easy to implement.  They're simply functions that take a single value and return an error message for failure, and `undefined` for passing.
+
+```js
+const isEven = value => {
+  if (value % 2 !== 0) return 'value must be even';
+};
+
+isEven(4); // undefined
+isEven(5); // value must be even
+
+const validate = createValidator({
+  foo: isEven
+});
+
+const errors = validate({
+  foo: 5
+});
+
+/* 
+[
+  property: 'foo',
+  message: 'value must be even'
+]
+*/
+
+```
+
+Built-in functions use currying to allow options and custom error messages to be set.  You can follow this technique like so:
+
+```js
+const divisibleBy = (divisor, message = 'divisibleBy') => {
+  return value => {
+    if (value % divisor !== 0) return message;
+  }
+};
+
+const isDivisibleBy3 = divisibleBy(3, 'value must divisibly by 3');
+```
+
+Check out the [other rules](https://github.com/developerdizzle/valerie/tree/master/src/rules) for more examples.
 
 ## TODO:
 
