@@ -75,11 +75,11 @@ validate(input).then(function(errors) {
 [
   {
     property: 'name.last',
-    message: 'required'
+    message: 'last name is required'
   },
   {
     property: 'favoriteColor',
-    message: 'invalid color'
+    message: 'must be a primary color'
   }
 ]
 */
