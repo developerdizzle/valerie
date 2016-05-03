@@ -1,5 +1,5 @@
 import createValidator from '../src';
-import { required, number, range, oneOf, regex, hasProperty } from '../src/rules';
+import { number, hasProperty } from '../src/rules';
 
 const schema = {
     foo: Object.assign(hasProperty('bar'), {

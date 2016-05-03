@@ -115,9 +115,9 @@ isTrue(false); // 'value must be true';
 isTrue(true); // undefined
 ```
 
-## Built-in rules
+## Simple rules
 
-The built-in rules are largely based on the fundamental javascript operations.
+The simple rules are largely based on the fundamental javascript operations.
 
 ### `array([message = "array"])`
 
@@ -315,9 +315,9 @@ const validate = createValidator({ foo: isRequired });
 const errors = await validate({ foo: true );
 ```
 
-## Advanced Rules
+## Extended Rules
 
-Advanced rules use the built-in rules to form more complex logic
+Extended rules use the simple rules to form more complex logic
 
 ### `range(min, max, [message = "range"])`
 

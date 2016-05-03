@@ -1,14 +1,12 @@
-import array from './array';
-import equalTo from './equalTo';
-import greaterThan from './greaterThan';
-import hasProperty from './hasProperty';
-import isInstanceOf from './isInstanceOf';
-import isTypeOf from './isTypeOf';
-import lessThan from './lessThan';
-import number from './number';
-import oneOf from './oneOf';
-import or from './or';
-import regex from './regex';
-import required from './required';
-
-export { array, equalTo, greaterThan, hasProperty, isInstanceOf, isTypeOf, lessThan, number, oneOf, or, regex, required };
+export { default as array } from './array';
+export { default as equalTo } from './equalTo';
+export { default as greaterThan } from './greaterThan';
+export { default as hasProperty } from './hasProperty';
+export { default as isInstanceOf } from './isInstanceOf';
+export { default as isTypeOf } from './isTypeOf';
+export { default as lessThan } from './lessThan';
+export { default as number } from './number';
+export { default as oneOf } from './oneOf';
+export { default as or } from './or';
+export { default as regex } from './regex';
+export { default as required } from './required';
