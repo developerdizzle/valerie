@@ -1,4 +1,4 @@
-import isInstanceOf from '../../src/rules/isInstanceOf';
+import { isInstanceOf } from '../../src/rules';
 
 describe('isInstanceOf validator', () => {
     class Foo {};

@@ -1,4 +1,4 @@
-import is from '../../src/rules/is';
+import { is } from '../../src/rules';
 
 describe('is validator', () => {
     it('passes if value strictly equals target', () => {

@@ -1,4 +1,4 @@
-import number from '../../src/rules/number';
+import { number } from '../../src/rules';
 
 describe('number validator', () => {
     it('passes if value is a number', () => {

@@ -23,7 +23,7 @@ Import the function and built-in rules
 ```js
 import createValidator from 'valerie';
 import { required, number, oneOf } from 'valerie/rules';
-import { range } from 'valerie/rules/advanced';
+import { range } from 'valerie/rules/extended';
 ```
 
 Compose the validation schema for our object
@@ -119,21 +119,24 @@ isTrue(true); // undefined
 
 The simple rules are largely based on the fundamental javascript operations.
 
-### `array([message = "array"])`
+### Equality rules
 
-Tests if a value is an array (`Array.isArray`).
+#### `is(target, [message = "is"])`
 
+Tests if a value is strictly equal (`===`) to a target value.
+
+ - `target`: what the validated value should equal
  - `message`: optional custom error message
 
 ```js
-const isArray = array('foo must be an array');
+const isBar = equalTo('bar', 'foo must be bar');
 
-const validate = createValidator({ foo: isArray });
+const validate = createValidator({ foo: isBar });
 
-const errors = await validate({ foo: ['bar', 'baz'] });
+const errors = await validate({ foo: 'bar' });
 ```
 
-### `equalTo(target, [message = "equalTo"])`
+#### `equalTo(target, [message = "equalTo"])`
 
 Tests if a value is loosely equal (`==`) to a target value.
 
@@ -148,7 +151,23 @@ const validate = createValidator({ foo: isBar });
 const errors = await validate({ foo: new String('bar') });
 ```
 
-### `greaterThan(target, [message = "greaterThan"])`
+### Numeric rules
+
+#### `number([message = "number"])`
+
+Tests if a value is a number (`!isNaN`).
+
+ - `message`: optional custom error message
+
+```js
+const isNumber = number(foo 'must be a number');
+
+const validate = createValidator({ foo: isNumber });
+
+const errors = await validate({ foo: Math.PI });
+```
+
+#### `greaterThan(target, [message = "greaterThan"])`
 
 Tests if a value is greater than (`>`) a target value.
 
@@ -163,7 +182,102 @@ const validate = createValidator({ foo: isPositive });
 const errors = await validate({ foo: 1 });
 ```
 
-### `hasProperty(property, [message = "hasProperty"])`
+#### `lessThan(target, [message = "lessThan"])`
+
+Tests if a value is less than (`<`) a target value.
+
+ - `target`: what the validated value should be less than
+ - `message`: optional custom error message
+
+```js
+const isNegative = lessThan(0, 'foo must be negative');
+
+const validate = createValidator({ foo: isNegative });
+
+const errors = await validate({ foo: -1 });
+```
+
+### Array rules
+
+#### `array([message = "array"])`
+
+Tests if a value is an array (`Array.isArray`).
+
+ - `message`: optional custom error message
+
+```js
+const isArray = array('foo must be an array');
+
+const validate = createValidator({ foo: isArray });
+
+const errors = await validate({ foo: ['bar', 'baz'] });
+```
+
+#### `contains(item, [message = "contains"])`
+
+Tests if a value contains (`indexOf`) an item.
+
+ - `item`: item that value should contain
+ - `message`: optional custom error message
+
+```js
+const containsBar = contains('bar', 'foo must contain bar');
+
+const validate = createValidator({ foo: containsBar });
+
+const errors = await validate({ foo: ['bar'] });
+```
+
+#### `oneOf(options, [message = "oneOf"])`
+
+Tests if a value is equal to (`===`) an item in an `Array`.
+
+ - `options`: array of items to check against
+ - `message`: optional custom error message
+
+```js
+const isPrimaryColor = oneOf(['red', 'blue', 'yellow'], 'foo must be a primary color');
+
+const validate = createValidator({ foo: isPrimaryColor });
+
+const errors = await validate({ foo: 'blue' });
+```
+
+### Type rules
+
+#### `isInstanceOf(type, [message = "isInstanceOf"])`
+
+Tests if a value is an instance of a class (`instanceof`).
+
+ - `type`: what the validated value should be an instance of
+ - `message`: optional custom error message
+
+```js
+const isBar = isInstanceOf(Bar, 'foo must be bar');
+
+const validate = createValidator({ foo: isBar });
+
+const errors = await validate({ foo: new Bar() });
+```
+
+#### `isTypeOf(type, [message = "isTypeOf"])`
+
+Tests if a value is of a given type (`typeof`).
+
+ - `type`: what the validated value should be a type of
+ - `message`: optional custom error message
+
+```js
+const isString = isTypeOf(Bar, 'foo must be a string');
+
+const validate = createValidator({ foo: isString });
+
+const errors = await validate({ foo: 'bar' });
+```
+
+### Other rules
+
+#### `hasProperty(property, [message = "hasProperty"])`
 
 Tests if an object has a child property (`hasOwnProperty`).
 
@@ -182,96 +296,7 @@ const errors = await validate({
 });
 ```
 
-### `is(target, [message = "is"])`
-
-Tests if a value is strictly equal (`===`) to a target value.
-
- - `target`: what the validated value should equal
- - `message`: optional custom error message
-
-```js
-const isBar = equalTo('bar', 'foo must be bar');
-
-const validate = createValidator({ foo: isBar });
-
-const errors = await validate({ foo: 'bar' });
-```
-
-### `isInstanceOf(type, [message = "isInstanceOf"])`
-
-Tests if a value is an instance of a class (`instanceof`).
-
- - `type`: what the validated value should be an instance of
- - `message`: optional custom error message
-
-```js
-const isBar = isInstanceOf(Bar, 'foo must be bar');
-
-const validate = createValidator({ foo: isBar });
-
-const errors = await validate({ foo: new Bar() });
-```
-
-### `isTypeOf(type, [message = "isTypeOf"])`
-
-Tests if a value is of a given type (`typeof`).
-
- - `type`: what the validated value should be a type of
- - `message`: optional custom error message
-
-```js
-const isString = isTypeOf(Bar, 'foo must be a string');
-
-const validate = createValidator({ foo: isString });
-
-const errors = await validate({ foo: 'bar' });
-```
-
-### `lessThan(target, [message = "lessThan"])`
-
-Tests if a value is less than (`<`) a target value.
-
- - `target`: what the validated value should be less than
- - `message`: optional custom error message
-
-```js
-const isNegative = lessThan(0, 'foo must be negative');
-
-const validate = createValidator({ foo: isNegative });
-
-const errors = await validate({ foo: -1 });
-```
-
-### `number([message = "number"])`
-
-Tests if a value is a number (`!isNaN`).
-
- - `message`: optional custom error message
-
-```js
-const isNumber = number(foo 'must be a number');
-
-const validate = createValidator({ foo: isNumber });
-
-const errors = await validate({ foo: Math.PI });
-```
-
-### `oneOf(options, [message = "oneOf"])`
-
-Tests if a value is equal to (`===`) an item in an `Array`.
-
- - `options`: array of items to check against
- - `message`: optional custom error message
-
-```js
-const isPrimaryColor = oneOf(['red', 'blue', 'yellow'], 'foo must be a primary color');
-
-const validate = createValidator({ foo: isPrimaryColor });
-
-const errors = await validate({ foo: 'blue' });
-```
-
-### `or(rules, [message = "or"])`
+#### `or(rules, [message = "or"])`
 
 Tests if a value is is valid against at least one rule within an `Array` of rules.
 

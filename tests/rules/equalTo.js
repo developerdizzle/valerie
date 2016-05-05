@@ -1,4 +1,4 @@
-import equalTo from '../../src/rules/equalTo';
+import { equalTo } from '../../src/rules';
 
 describe('equalTo validator', () => {
     it('passes if value loosely equals target', () => {

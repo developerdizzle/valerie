@@ -1,6 +1,6 @@
 import createValidator from '../src';
 import { required, number, oneOf, regex } from '../src/rules';
-import { range } from '../src/rules/advanced';
+import { range } from '../src/rules/extended';
 
 const schema = {
     id: [required(), number()],

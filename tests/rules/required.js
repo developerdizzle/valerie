@@ -1,4 +1,4 @@
-import required from '../../src/rules/required';
+import { required } from '../../src/rules';
 
 describe('required validator', () => {
     it('passes if property has a value', () => {

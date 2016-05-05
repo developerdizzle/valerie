@@ -1,4 +1,4 @@
-import greaterThan from '../../src/rules/greaterThan';
+import { greaterThan } from '../../src/rules';
 
 describe('greaterThan validator', () => {
     it('passes if value is greater than target', () => {

@@ -1,4 +1,4 @@
-import hasProperty from '../../src/rules/hasProperty';
+import { hasProperty } from '../../src/rules';
 
 describe('hasProperty validator', () => {
     it('passes if value has property', () => {

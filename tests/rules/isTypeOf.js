@@ -1,4 +1,4 @@
-import isTypeOf from '../../src/rules/isTypeOf';
+import { isTypeOf } from '../../src/rules';
 
 describe('isTypeOf validator', () => {
     class Foo {};

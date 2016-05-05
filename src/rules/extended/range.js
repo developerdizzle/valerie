@@ -1,7 +1,4 @@
-import {
-  equalTo, or, greaterThan, lessThan
-}
-from '../';
+import { equalTo, or, greaterThan, lessThan } from '../';
 
 const range = (lower, upper, message = 'range') => {
   return value => {

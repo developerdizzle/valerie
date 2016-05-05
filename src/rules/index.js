@@ -1,12 +1,3 @@
-export { default as array } from './array';
-export { default as equalTo } from './equalTo';
-export { default as greaterThan } from './greaterThan';
-export { default as hasProperty } from './hasProperty';
-export { default as isInstanceOf } from './isInstanceOf';
-export { default as isTypeOf } from './isTypeOf';
-export { default as lessThan } from './lessThan';
-export { default as number } from './number';
-export { default as oneOf } from './oneOf';
-export { default as or } from './or';
-export { default as regex } from './regex';
-export { default as required } from './required';
+import { array, contains, equalTo, greaterThan, hasProperty, is, isInstanceOf, isTypeOf,  lessThan, number, oneOf, or, regex, required } from 'glob:*.js';
+
+export { array, contains, equalTo, greaterThan, hasProperty, is, isInstanceOf, isTypeOf, lessThan, number, oneOf, or, regex, required };

@@ -1,4 +1,4 @@
-import lessThan from '../../src/rules/lessThan';
+import { lessThan } from '../../src/rules';
 
 describe('lessThan validator', () => {
     it('passes if value is less than target', () => {

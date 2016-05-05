@@ -1,4 +1,4 @@
-import regex from '../../src/rules/regex';
+import { regex } from '../../src/rules';
 
 describe('regex validator', () => {
     it('passes if value matches', () => {

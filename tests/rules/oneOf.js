@@ -1,4 +1,4 @@
-import oneOf from '../../src/rules/oneOf';
+import { oneOf } from '../../src/rules';
 
 describe('oneOf validator', () => {
     it('passes if value is one of the valid options', () => {

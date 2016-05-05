@@ -1,4 +1,4 @@
-import array from '../../src/rules/array';
+import { array } from '../../src/rules';
 
 describe('array validator', () => {
     it('passes if value is an array', () => {
