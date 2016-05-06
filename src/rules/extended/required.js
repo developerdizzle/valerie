@@ -1,7 +1,5 @@
 import { and, defined, notEmpty } from '../';
 
-const required = (message = 'required') => {
-  return and([ defined(), notEmpty() ], message);
-};
+const required = (message = 'required') => and([ defined(), notEmpty() ], message);
 
 export default required;

@@ -1,7 +1,7 @@
 const and = (rules, message = 'and') => {
-  return value => {
+  return async value => {
     for (const rule of rules) {
-      const error = rule(value);
+      const error = await Promise.resolve(rule(value));
 
       if (error !== undefined) return message;
     }

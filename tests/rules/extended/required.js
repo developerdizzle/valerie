@@ -1,42 +1,42 @@
 import { required } from '../../../src/rules/extended';
 
 describe('required validator', () => {
-    it('passes if property has a value', () => {
+    pit('passes if property has a value', async () => {
         const rule = required();
         
-        const error = rule('foo');
+        const error = await rule('foo');
 
         expect(error).toBeUndefined();
     });
     
-    it('finds undefined values', () => {
+    pit('finds undefined values', async () => {
         const rule = required();
         
-        const error = rule(undefined);
+        const error = await rule(undefined);
         
         expect(error).toEqual('required');
     });
 
-    it('finds empty strings', () => {
+    pit('finds empty strings', async () => {
         const rule = required();
         
-        const error = rule('');
+        const error = await rule(' ');
         
         expect(error).toEqual('required');        
     });
 
-    it('finds empty arrays', () => {
+    pit('finds empty arrays', async () => {
         const rule = required();
         
-        const error = rule([]);
+        const error = await rule([]);
         
         expect(error).toEqual('required'); 
     });
 
-    it('can contain a custom message', () => {
+    pit('can contain a custom message', async () => {
         const rule = required('name is required');
         
-        const error = rule(undefined);
+        const error = await rule(undefined);
         
         expect(error).toEqual('name is required');
     });

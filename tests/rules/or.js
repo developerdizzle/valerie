@@ -1,26 +1,26 @@
 import { or, equalTo } from '../../src/rules';
 
 describe('or validator', () => {
-    it('passes if one rule is valid', () => {
+    pit('passes if one rule is valid', async () => {
         const rule = or([equalTo('bar'), equalTo('baz')]);
         
-        const error = rule('bar');
+        const error = await rule('bar');
         
         expect(error).toBeUndefined();
     });
 
-    it('fails if both rules are not valid', () => {
+    pit('fails if both rules are not valid', async () => {
         const rule = or([equalTo('bar'), equalTo('baz')]);
         
-        const error = rule('foo');
+        const error = await rule('foo');
         
         expect(error).toEqual('or');
     });
     
-    it('can contain a custom message', () => {
+    pit('can contain a custom message', async () => {
         const rule = or([equalTo('bar'), equalTo('baz')], 'must equal bar or baz');
         
-        const error = rule('foo');
+        const error = await rule('foo');
         
         expect(error).toEqual('must equal bar or baz');
     });

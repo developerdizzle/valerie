@@ -298,7 +298,7 @@ const errors = await validate({
 
 These rules take one or more rules as input and return new, compoud rule.
 
-#### `and(rules, [message = "and"])`
+#### `async and(rules, [message = "and"])`
 
 Tests if a value is valid against all rules within an `Array`.
 
@@ -313,7 +313,7 @@ const validate = createValidator({ foo: isArrayContainingBar });
 const errors = await validate({ foo: ['bar', 'baz', 'qux'] );
 ```
 
-#### `or(rules, [message = "or"])`
+#### `async or(rules, [message = "or"])`
 
 Tests if a value is is valid against at least one rule within an `Array` of rules.
 
@@ -328,7 +328,7 @@ const validate = createValidator({ foo: isNumberOrX });
 const errors = await validate({ foo: 'x' );
 ```
 
-#### `not(rule, [message = "not"])`
+#### `async not(rule, [message = "not"])`
 
 Tests if a value is _not_ valid against rule.
 
@@ -365,7 +365,7 @@ const errors = await validate({ foo: 'bar@baz.com' });
 
 Extended rules use the simple rules to form more complex logic
 
-### `range(min, max, [message = "range"])`
+### `async range(min, max, [message = "range"])`
 
 Tests if a value is between two values.  Generally want to use with `number`.  Depends on `and`, `or`, `greaterThan`, `lessThan`, and `equalTo`.
 
@@ -382,7 +382,7 @@ const validate = createValidator({ foo: [isNumber, isHumanAge] });
 const errors = await validate({ foo: 100 });
 ```
 
-#### `required([message = "required"])`
+#### `async required([message = "required"])`
 
 Tests if a value exists (not `undefined`, not an empty string, not an empty array).  Depends on `and`, `defined`, and `notEmpty`.
 

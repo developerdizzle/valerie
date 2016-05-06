@@ -1,11 +1,11 @@
-const validate = async(data, schema, maximum) => {
+const validate = async (data, schema, maximum) => {
   if (Object.keys(schema).length === 0) return [];
   if (maximum === 0) return [];
 
   return validateCount('', data, schema, maximum);
 };
 
-const validateCount = async(parentPath, data = {}, schemata, maximum) => {
+const validateCount = async (parentPath, data = {}, schemata, maximum) => {
   let errors = [];
 
   // filter out array indices
@@ -56,6 +56,6 @@ const validateCount = async(parentPath, data = {}, schemata, maximum) => {
   return errors;
 };
 
-const createValidator = (schema = {}) => async(data = {}, maximum = Infinity) => validate(data, schema, maximum);
+const createValidator = (schema = {}) => async (data = {}, maximum = Infinity) => validate(data, schema, maximum);
 
 export default createValidator;

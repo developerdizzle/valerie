@@ -1,6 +1,8 @@
 const not = (rule, message = 'not') => {
-  return value => {
-    if (rule(value) === undefined) return message;
+  return async value => {
+    const error = await Promise.resolve(rule(value));
+
+    if (error === undefined) return message;
   };
 };
 
