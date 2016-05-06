@@ -275,7 +275,28 @@ const validate = createValidator({ foo: isString });
 const errors = await validate({ foo: 'bar' });
 ```
 
+#### `hasProperty(property, [message = "hasProperty"])`
+
+Tests if an object has a child property (`hasOwnProperty`).
+
+ - `property`: name of the property
+ - `message`: optional custom error message
+
+```js
+const hasBar = hasProperty('bar', 'foo must have bar property');
+
+const validate = createValidator({ foo: hasBar });
+
+const errors = await validate({
+    foo: {
+        bar: true
+    }
+});
+```
+
 ### Logical operators
+
+These rules take one or more rules as input and return new, compoud rule.
 
 #### `and(rules, [message = "and"])`
 
@@ -323,25 +344,6 @@ const errors = await validate({ foo: 'bar' );
 ```
 
 ### Other rules
-
-#### `hasProperty(property, [message = "hasProperty"])`
-
-Tests if an object has a child property (`hasOwnProperty`).
-
- - `property`: name of the property
- - `message`: optional custom error message
-
-```js
-const hasBar = hasProperty('bar', 'foo must have bar property');
-
-const validate = createValidator({ foo: hasBar });
-
-const errors = await validate({
-    foo: {
-        bar: true
-    }
-});
-```
 
 #### `regex(pattern, [message = "regex"])`
 
