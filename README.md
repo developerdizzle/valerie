@@ -365,7 +365,7 @@ Extended rules use the simple rules to form more complex logic
 
 ### `range(min, max, [message = "range"])`
 
-Tests if a value is between two values.  Generally want to use with `number`.  Depends on `greaterThan`, `lessThan`, `equalTo`, and `or`.
+Tests if a value is between two values.  Generally want to use with `number`.  Depends on `and`, `or`, `greaterThan`, `lessThan`, and `equalTo`.
 
  - `min`: minimum value, inclusive
  - `max`: maximum value, inclusive
