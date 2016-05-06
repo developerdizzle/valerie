@@ -1,3 +1,3 @@
-import { range } from 'glob:*.js';
+import { range, required } from 'glob:*.js';
 
-export { range };
+export { range, required };

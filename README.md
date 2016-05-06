@@ -22,8 +22,8 @@ Import the function and built-in rules
 
 ```js
 import createValidator from 'valerie';
-import { required, number, oneOf } from 'valerie/rules';
-import { range } from 'valerie/rules/extended';
+import { number, oneOf } from 'valerie/rules';
+import { range, required } from 'valerie/rules/extended';
 ```
 
 Compose the validation schema for our object
@@ -275,6 +275,53 @@ const validate = createValidator({ foo: isString });
 const errors = await validate({ foo: 'bar' });
 ```
 
+### Logical operators
+
+#### `and(rules, [message = "and"])`
+
+Tests if a value is valid against all rules within an `Array`.
+
+ - `rules`: array of rules to validate against
+ - `message`: optional custom error message
+
+```js
+const isArrayContainingBar = and([array(), contains('bar')], 'foo must be an array containing "bar"');
+
+const validate = createValidator({ foo: isArrayContainingBar });
+
+const errors = await validate({ foo: ['bar', 'baz', 'qux'] );
+```
+
+#### `or(rules, [message = "or"])`
+
+Tests if a value is is valid against at least one rule within an `Array` of rules.
+
+ - `rules`: array of rules to validate against
+ - `message`: optional custom error message
+
+```js
+const isNumberOrX = or([number(), equals('x')], 'foo must be a number or the letter "x"');
+
+const validate = createValidator({ foo: isNumberOrX });
+
+const errors = await validate({ foo: 'x' );
+```
+
+#### `not(rule, [message = "not"])`
+
+Tests if a value is _not_ valid against rule.
+
+ - `rule`: rule to tet against
+ - `message`: optional custom error message
+
+```js
+const isNotNumber = not(number(), 'foo must not be a number');
+
+const validate = createValidator({ foo: isNotNumber });
+
+const errors = await validate({ foo: 'bar' );
+```
+
 ### Other rules
 
 #### `hasProperty(property, [message = "hasProperty"])`
@@ -296,22 +343,7 @@ const errors = await validate({
 });
 ```
 
-#### `or(rules, [message = "or"])`
-
-Tests if a value is is valid against at least one rule within an `Array` of rules.
-
- - `rules`: array of rules to validate against
- - `message`: optional custom error message
-
-```js
-const isNumberOrX = or([number(), equals('x')], 'foo must be a number or the letter "x"');
-
-const validate = createValidator({ foo: isNumberOrX });
-
-const errors = await validate({ foo: 'x' );
-```
-
-### `regex(pattern, [message = "regex"])`
+#### `regex(pattern, [message = "regex"])`
 
 Tests if a value matches a regex (`.match`)
 
@@ -326,19 +358,6 @@ const validate = createValidator({ foo: isEMail });
 const errors = await validate({ foo: 'bar@baz.com' });
 ```
 
-### `required([message = "required"])`
-
-Tests if a value exists (not `undefined`, not an empty string, not an empty array)
-
- - `message`: optional custom error message
-
-```js
-const isRequired = required('foo is required');
-
-const validate = createValidator({ foo: isRequired });
-
-const errors = await validate({ foo: true );
-```
 
 ## Extended Rules
 
@@ -359,6 +378,20 @@ const isHumanAge = range(0, 123, 'foo must be a human age');
 const validate = createValidator({ foo: [isNumber, isHumanAge] });
 
 const errors = await validate({ foo: 100 });
+```
+
+#### `required([message = "required"])`
+
+Tests if a value exists (not `undefined`, not an empty string, not an empty array).  Depends on `and`, `defined`, and `notEmpty`.
+
+ - `message`: optional custom error message
+
+```js
+const isRequired = required('foo is required');
+
+const validate = createValidator({ foo: isRequired });
+
+const errors = await validate({ foo: 'bar' );
 ```
 
 ## Custom Rules
@@ -392,7 +425,7 @@ const errors = await validate({
 
 ```
 
-Built-in functions use currying to allow options and custom error messages to be set.  You can follow this technique like so:
+Built-in rules use currying to allow options and custom error messages to be set.  You can follow this technique like so:
 
 ```js
 const divisibleBy = (divisor, message = 'divisibleBy') => {
@@ -409,11 +442,9 @@ Check out the [other rules](https://github.com/developerdizzle/valerie/tree/mast
 ## TODO:
 
 * Rules
-    * `contains`
     * `email`
 * Examples of client- and server-side usage
 * Example of promise rule
-* Add custom messages to readme example
 * Compare to other libs
     * https://github.com/hapijs/joi (large)
     * https://github.com/molnarg/js-schema (no custom messages)

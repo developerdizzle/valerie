@@ -14,7 +14,7 @@ describe('lessThan validator', () => {
         
         const error = rule(undefined);
         
-        expect(error).toEqual('lessThan');
+        expect(error).toBeUndefined();
     });
     
     it('fails if value is not less than target', () => {
