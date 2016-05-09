@@ -332,7 +332,7 @@ const errors = await validate({ foo: 'x' );
 
 Tests if a value is _not_ valid against rule.
 
- - `rule`: rule to tet against
+ - `rule`: rule to validate against
  - `message`: optional custom error message
 
 ```js
